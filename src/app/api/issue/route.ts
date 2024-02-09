@@ -14,23 +14,24 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (data.wallet) {
       const body = {
         metadata: {
-          name: "Test Credential",
-          image:
-            "https://sapphire-controlled-herring-537.mypinata.cloud/ipfs/QmZM4HCFrTceuBV7YABGwHNjaGzsKuwNZTNfefaQ7kX3fr",
+          name: "Slamford CS",
+          image: "ipfs://QmUGeWerAfyKVVdAjaxYdAhK74oJmBvusPdKtNDN3e1bYN",
           description: "Test NFT created using the Crossmint Minting API",
         },
         recipient: `polygon:${data.wallet}`,
         credential: {
           subject: {
-            age: 42,
-            username: "dmulvi",
+            course: "Blockchain 101",
+            passed: true,
           },
           expiresAt: "2034-12-12",
         },
       };
 
+      const collectionId = process.env.NEXT_PUBLIC_VC_COLLECTION_ID;
+
       const apiResponse = await callCrossmintAPI(
-        "unstable/collections/c2a48f3e-de5e-477a-b003-3dd885976908/credentials",
+        `unstable/collections/${collectionId}/credentials`,
         {
           method: "POST",
           body,

@@ -7,7 +7,10 @@ export async function OPTIONS(req: NextRequest, res: NextResponse) {
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
-  const validContracts = ["0x685E6aE7925210F69889747d49D6bCC10A49c032"];
+  const validContracts = [
+    "0x685E6aE7925210F69889747d49D6bCC10A49c032",
+    "0xEB5c3E84831ED7f158307ebC2AfBc064EfF778b4",
+  ];
 
   try {
     const data = await req.json();
