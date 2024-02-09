@@ -16,11 +16,10 @@ type Wallet = {
   address: string;
 };
 
-const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
-//CrossmintAPI.init(clientKey);
-CrossmintAPI.init(
-  "sk_staging_9tSWj11CgSM3ZjHdsjc1KE2p3B2d2vyvmj7LNwVqMwpzKbWEN9fHQNHbbo1dDxbjiPX7Gk1cgeofstQXLw67sm5KCTHTfHWgk6rpBW2qRrFSiYy3fdiNNFZXD3jwfP8jtYjCosQrBubV3V6ZdUFjBRYJbh2uE72yc7F4DdUYjCESoUSuZo1NTNVUEUcJ3dREKvWQFx13w8sEZBe7keKknJ2S"
-);
+//const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
+const apiKey = process.env.NEXT_PUBLIC_CROSSMINT_API_KEY || "";
+CrossmintAPI.init(apiKey);
+
 const env = "staging";
 
 // verifyCredential(valid_vc as VerifiableCredential).then((res) => {
@@ -31,14 +30,14 @@ const env = "staging";
 //     (data: any) => console.log(data)
 // ); (edited)
 
-// getCredentialCollections(
-//   "polygon",
-//   "0x6C3b3225759Cbda68F96378A9F0277B4374f9F06",
-//   undefined,
-//   env
-// )
-//   .then((data: any) => console.log(data))
-//   .catch((error: Error) => console.error(error));
+getCredentialCollections(
+  "polygon",
+  "0x6C3b3225759Cbda68F96378A9F0277B4374f9F06",
+  undefined,
+  env
+)
+  .then((data: any) => console.log("sdk data:", data))
+  .catch((error: Error) => console.error(error));
 
 interface CredentialData {
   id: string;
