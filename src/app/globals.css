@@ -9,14 +9,18 @@
 }
 
 body {
-  background-image: url("/bg-tiled.jpg");
+  background-image: url("/bg-tiled-light.jpg");
   background-repeat: repeat;
 }
 
+nav {
+  opacity: 0.95;
+}
+
 main {
-  background-color: rgba(0, 0, 0, 0.8);
-  border-left: 2px solid #444;
-  border-right: 2px solid #444;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-left: 2px solid #ccc;
+  border-right: 2px solid #ccc;
   margin-top: 72px;
 }
 
@@ -24,6 +28,6 @@ main {
   box-shadow: 0 8px 15px rgba(5, 75, 75, 0.6);
 }
 
-.course-available {
+.gray-img {
   filter: grayscale(100%);
 }
