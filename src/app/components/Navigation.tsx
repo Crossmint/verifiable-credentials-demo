@@ -21,10 +21,10 @@ const Navigation = () => {
     isActive(route) ? `${linkBaseClass} text-[#02bdd6]` : linkBaseClass;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-black shadow-lg custom-glow z-50">
-      <div className="max-w-5xl mx-auto flex justify-between items-center p-4 ">
+    <nav className="fixed top-0 left-0 right-0 bg-[#8C1515] shadow-lg custom-glow z-50">
+      <div className="max-w-6xl mx-auto flex justify-between items-center p-4 ">
         <div className={`text-white text-xl ${orbitron.className}`}>
-          Verifiable Credentials Demo
+          Shibetoshi University
         </div>
         <div className="links flex gap-4">
           {/* Apply the dynamic class based on the active route */}

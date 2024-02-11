@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useCredentials } from "@context/credentials";
-import Credential from "@components/credential";
+import Credential from "@components/Credential";
 
 // verifyCredential(valid_vc as VerifiableCredential).then((res) => {
 //   console.log(res);
@@ -11,13 +11,6 @@ import Credential from "@components/credential";
 // getMetadata("0x5F941092d2b1C984DB0789686fDB029393714C0d", env).then(
 //   (data: any) => console.log(data)
 // );
-
-interface CredentialData {
-  id: string;
-  imageUrl: string;
-  title: string;
-  description: string;
-}
 
 const Page = () => {
   const credentialContext = useCredentials();
