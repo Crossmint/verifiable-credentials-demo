@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callCrossmintAPI } from "@/app/utils/crossmint";
+import { createStudentId } from "./credentials";
 
 // required for CORS
 export async function OPTIONS(req: NextRequest, res: NextResponse) {
@@ -12,23 +13,32 @@ export async function POST(req: NextRequest, res: NextResponse) {
     console.log("issue credential: ", data);
 
     if (data.wallet) {
-      const body = {
-        metadata: {
-          name: "Slamford CS",
-          image: "ipfs://QmUGeWerAfyKVVdAjaxYdAhK74oJmBvusPdKtNDN3e1bYN",
-          description: "Test NFT created using the Crossmint Minting API",
-        },
-        recipient: `polygon:${data.wallet}`,
-        credential: {
-          subject: {
-            course: "Blockchain 101",
-            passed: true,
-          },
-          expiresAt: "2034-12-12",
-        },
-      };
+      const recipient = `polygon:${data.wallet}`;
+      const firstName = "Danny";
+      const lastName = "Mulvihill";
+      const secret = "I don't mind pineapple on pizza";
 
-      const collectionId = process.env.NEXT_PUBLIC_VC_COLLECTION_ID;
+      const body = createStudentId(recipient, firstName, lastName, secret);
+      // const body = {
+      //   metadata: {
+      //     name: "Slamford CS",
+      //     image: "ipfs://QmUGeWerAfyKVVdAjaxYdAhK74oJmBvusPdKtNDN3e1bYN",
+      //     description: "Test NFT created using the Crossmint Minting API",
+      //   },
+      //   recipient: `polygon:${data.wallet}`,
+      //   credential: {
+      //     subject: {
+      //       course: "Blockchain 101",
+      //       passed: true,
+      //     },
+      //     expiresAt: "2034-12-12",
+      //   },
+      // };
+
+      console.log("body:", body);
+      //return NextResponse.json({ test: "test" }, { status: 200 });
+
+      const collectionId = process.env.NEXT_PUBLIC_STUDENT_ID_COLLECTION;
 
       const apiResponse = await callCrossmintAPI(
         `unstable/collections/${collectionId}/credentials`,

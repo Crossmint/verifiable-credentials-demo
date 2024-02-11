@@ -23,6 +23,7 @@ const Content = () => {
       },
       body: JSON.stringify({
         wallet: wallet?.address,
+        credential: "studentId",
       }),
     });
     const data = await response.json();
@@ -64,7 +65,7 @@ const Content = () => {
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
         onClick={issueCredential}
       >
-        Issue Credential
+        Issue ID Credential
       </button>
 
       <h2>Retrieve</h2>

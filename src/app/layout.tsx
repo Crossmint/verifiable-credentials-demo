@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Fira_Code } from "next/font/google";
-import Layout from "./context/dynamic";
+import Layout from "./context";
 import "./globals.css";
 
 export const metadata: Metadata = {

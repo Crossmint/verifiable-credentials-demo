@@ -31,11 +31,11 @@ const Navigation = () => {
           <a href="/" className={linkClass("/")}>
             Home
           </a>
-          <a href="/issue" className={linkClass("/issue")}>
-            Issue
+          <a href="/courses" className={linkClass("/courses")}>
+            Courses
           </a>
-          <a href="/verify" className={linkClass("/verify")}>
-            Verify
+          <a href="/profile" className={linkClass("/profile")}>
+            Profile
           </a>
           <DynamicWidget />
         </div>

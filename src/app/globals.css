@@ -23,3 +23,7 @@ main {
 .custom-glow {
   box-shadow: 0 8px 15px rgba(5, 75, 75, 0.6);
 }
+
+.course-available {
+  filter: grayscale(100%);
+}
