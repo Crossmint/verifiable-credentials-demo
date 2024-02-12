@@ -3,6 +3,7 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import {
   verifyCredential,
   VerifiableCredential,
+  getCredentialFromId,
   getCredentialCollections,
   getMetadata,
   CrossmintAPI,
@@ -23,10 +24,9 @@ type NFT = {
   tokenStandard: string;
 };
 
-// Define the type of your credentials
-type Credential = {
+type Collection = {
   contractAddress: string;
-  metadata: any;
+  metadata?: any;
   nfts: NFT[];
 };
 
@@ -35,67 +35,79 @@ type Wallet = {
 };
 
 type CredentialContextType = {
-  credentials: Credential[];
+  collections: Collection[];
+  retrieve: Function;
+  decrypt: Function;
+  verify: Function;
   wallet: Wallet;
 };
 
-// Create a context
 const CredentialContext = createContext<CredentialContextType | null>(null);
 
 const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
 CrossmintAPI.init(clientKey);
 
-// Create a provider component
 export function CredentialProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [wallet, setWallet] = useState<Wallet | null>();
-  const [credentials, setCredentials] = useState<Credential[] | null>(null);
+  const [collections, setCollections] = useState<Collection[] | null>(null);
   const { primaryWallet } = useDynamicContext();
   const environment = process.env.NEXT_PUBLIC_CROSSMINT_ENV || "";
 
   useEffect(() => {
     setWallet(primaryWallet);
-    console.log("primaryWallet: ", primaryWallet);
   }, [primaryWallet]);
 
   useEffect(() => {
     if (wallet?.address) {
-      getCredentialCollections(
-        "polygon",
-        "0x3404253d5c065a9E92Bd0df81729223Cef308fAE",
-        undefined,
-        environment
-      )
-        .then((data: any) => {
-          finishCreds(data);
-        })
-        .catch((error: Error) => console.error(error));
-
-      const finishCreds = (creds: any) => {
-        console.log("credentials context / creds: ", creds);
+      const getCollections = async (wallet: string) => {
+        const collections: any = await getCredentialCollections(
+          "polygon",
+          wallet,
+          undefined,
+          environment
+        );
 
         const validContracts = [
           "0x4bA6A45Da8A7039f5b1ED466971719F26790f733", // student id
           "0xfB93e9e1466110F5114B9D65c3E68615057E62A8", // courses
           "0x010beF737dA4f831EaBAf0B6460e5b3Df32Ec9F5", // certificate
         ];
-        const filteredCreds = creds.filter((obj: any) =>
+
+        const filtered = collections.filter((obj: any) =>
           validContracts.includes(obj.contractAddress)
         );
-        console.log("credentials context / filteredCreds: ", filteredCreds);
 
-        setCredentials(filteredCreds);
+        setCollections(filtered);
       };
+
+      getCollections(wallet?.address);
     }
   }, [wallet?.address]);
+
+  const retrieveCredential = async (id: string) => {
+    console.log("id: ", id);
+    getCredentialFromId(id, environment).then((data: any) => {});
+
+    const logCred = (cred: any) => {
+      console.log("cred: ", cred);
+    };
+  };
+
+  const decryptCredential = () => {};
+
+  const verifyCredential = () => {};
 
   return (
     <CredentialContext.Provider
       value={{
-        credentials: credentials || [],
+        collections: collections || [],
+        retrieve: retrieveCredential,
+        decrypt: decryptCredential,
+        verify: verifyCredential,
         wallet: wallet || { address: "" },
       }}
     >
