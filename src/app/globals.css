@@ -17,6 +17,15 @@ nav {
   opacity: 0.95;
 }
 
+.links a {
+  color: lightgrey;
+  transition: color 0.3s ease;
+}
+
+.links a:hover {
+  color: white;
+}
+
 main {
   background-color: rgba(255, 255, 255, 0.8);
   border-left: 2px solid #ccc;
@@ -28,6 +37,11 @@ main {
   box-shadow: 0 8px 15px rgba(5, 75, 75, 0.6);
 }
 
-.gray-img {
+.course-img img {
   filter: grayscale(100%);
+  transition: filter 0.3s ease;
+  cursor: pointer;
+}
+.course-img:hover img {
+  filter: grayscale(0%);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useCredentials } from "@context/credentials";
 import Credential from "@components/Credential";
 
@@ -12,20 +12,31 @@ import Credential from "@components/Credential";
 //   (data: any) => console.log(data)
 // );
 
+const getCredential = async (context: any) => {
+  const idCred = await context
+    .getCredentialFromId(
+      "urn:uuid:6a6658bf-3411-4b9f-8ed2-200dc212cb88",
+      "staging"
+    )
+    .then((data: any) => {
+      console.log("please...", data);
+    });
+
+  return idCred;
+};
+
 const Page = () => {
   const credentialContext = useCredentials();
-  const credentials = credentialContext?.credentials;
+  const collections = credentialContext?.collections;
   const wallet = credentialContext?.wallet;
-
-  console.log("profile page.tsx / credentials: ", credentials);
 
   return (
     <>
       <h1 className="text-xl text-white">Your Credentials</h1>
 
       <div className="flex flex-wrap justify-center items-center gap-4">
-        {credentials?.map((credential) =>
-          credential.nfts.map((nft) => (
+        {collections?.map((collection) =>
+          collection.nfts.map((nft) => (
             <Credential
               key={nft.metadata.credentialId}
               imageUrl={nft.metadata.image}
