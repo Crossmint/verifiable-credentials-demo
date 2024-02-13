@@ -134,6 +134,7 @@ const Content = () => {
             />
             <a
               href="https://docs.crossmint.com/verifiable-credentials/quickstart"
+              target="_blank"
               className="text-blue-500"
             >
               Check out the Docs
@@ -147,6 +148,7 @@ const Content = () => {
             />
             <a
               href="https://github.com/Crossmint/verifiable-credentials-demo"
+              target="_blank"
               className="text-blue-500"
             >
               Go to GitHub Repo
@@ -160,6 +162,7 @@ const Content = () => {
             />
             <a
               href="https://www.w3.org/TR/vc-data-model-2.0/"
+              target="_blank"
               className="text-blue-500"
             >
               Learn about the W3C Verifiable Credentials Standard
