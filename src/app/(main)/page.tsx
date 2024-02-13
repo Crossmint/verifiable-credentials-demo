@@ -133,7 +133,7 @@ const Content = () => {
               className="absolute top-7 right-7 text-2xl"
             />
             <a
-              href="https://docs.crossmint.com/verifiable-credentials"
+              href="https://docs.crossmint.com/verifiable-credentials/quickstart"
               className="text-blue-500"
             >
               Check out the Docs
