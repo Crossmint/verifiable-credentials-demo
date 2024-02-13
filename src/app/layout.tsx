@@ -1,13 +1,13 @@
 "use client";
 
-import { Fira_Code } from "next/font/google";
+import { Roboto } from "next/font/google";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { CredentialProvider } from "@context/credentials";
 import Navigation from "@components/Navigation";
 import "./globals.css";
 
-const fira = Fira_Code({ subsets: ["latin"] });
+const roboto = Roboto({ weight: ["100", "500"], subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -21,7 +21,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="icon" href="/favicon.png" type="image/png" />
       </head>
-      <body className={`h-full bg-black bg-opacity-80 ${fira.className}`}>
+      <body className={`h-full bg-black bg-opacity-80 ${roboto.className}`}>
         <DynamicContextProvider
           settings={{
             environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENV_ID || "",

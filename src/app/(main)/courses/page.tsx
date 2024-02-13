@@ -11,11 +11,13 @@ const Page = () => {
   const [currentCourse, setCurrentCourse] = useState<Course>();
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
-  const formRef = React.useRef<HTMLFormElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const credentialContext = useCredentials();
   const collections = credentialContext?.collections;
   const wallet = credentialContext?.wallet;
+
+  //console.log("courses", collections);
 
   const openCourse = (id: string) => {
     const course = courses.find((course) => course.id === id);
@@ -30,6 +32,9 @@ const Page = () => {
   };
 
   const scoreTest = () => {
+    console.log("currentCourse:", currentCourse);
+    console.log("answers:", answers);
+
     let score = 0;
 
     currentCourse?.test.forEach((quiz, index) => {
@@ -51,10 +56,8 @@ const Page = () => {
         {courses?.map((course) => (
           <CourseCard
             key={course.id}
-            id={course.id}
-            imageUrl={course.image}
-            title={course.name}
-            description={course.description}
+            course={course}
+            collections={collections || []}
             openCourse={openCourse}
           />
         ))}
@@ -71,7 +74,7 @@ const Page = () => {
             currentCourse.test.map((quiz, index) => (
               <div key={index} className="mb-6">
                 <h3 className="text-xl font-semibold mb-2">
-                  {++index}. {quiz.question}
+                  {index + 1}. {quiz.question}
                 </h3>
                 {quiz.options.map((option, i) => (
                   <div key={i} className="flex items-center space-x-2 mb-2">

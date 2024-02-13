@@ -7,54 +7,50 @@ export async function OPTIONS(req: NextRequest, res: NextResponse) {
   return NextResponse.json({ status: 200 });
 }
 
-export async function POST(req: NextRequest, res: NextResponse) {
-  try {
-    const data = await req.json();
-    console.log("issue credential: ", data);
+const handleStudentId = async (data: any) => {
+  const { recipient, firstName, lastName, secret } = data;
+  const body = createStudentId(recipient, firstName, lastName, secret);
+  const collectionId = process.env.NEXT_PUBLIC_STUDENT_ID_COLLECTION;
 
-    if (data.wallet) {
-      const recipient = `polygon:${data.wallet}`;
-      const firstName = "Danny";
-      const lastName = "Mulvihill";
-      const secret = "I don't mind pineapple on pizza";
-
-      const body = createStudentId(recipient, firstName, lastName, secret);
-      // const body = {
-      //   metadata: {
-      //     name: "Slamford CS",
-      //     image: "ipfs://QmUGeWerAfyKVVdAjaxYdAhK74oJmBvusPdKtNDN3e1bYN",
-      //     description: "Test NFT created using the Crossmint Minting API",
-      //   },
-      //   recipient: `polygon:${data.wallet}`,
-      //   credential: {
-      //     subject: {
-      //       course: "Blockchain 101",
-      //       passed: true,
-      //     },
-      //     expiresAt: "2034-12-12",
-      //   },
-      // };
-
-      console.log("body:", body);
-      //return NextResponse.json({ test: "test" }, { status: 200 });
-
-      const collectionId = process.env.NEXT_PUBLIC_STUDENT_ID_COLLECTION;
-
-      const apiResponse = await callCrossmintAPI(
-        `unstable/collections/${collectionId}/credentials`,
-        {
-          method: "POST",
-          body,
-        }
-      );
-
-      return NextResponse.json(apiResponse, { status: 200 });
-    } else {
-      return NextResponse.json(
-        { error: true, message: "Missing wallet" },
-        { status: 400 }
-      );
+  const apiResponse = await callCrossmintAPI(
+    `unstable/collections/${collectionId}/credentials`,
+    {
+      method: "POST",
+      body,
     }
+  );
+
+  return apiResponse;
+};
+
+type HandlerType = "studentId"; // Add more types as needed
+
+interface Data {
+  type: HandlerType;
+  recipient: string;
+  // Add more properties as needed
+}
+
+const handlers: Record<HandlerType, (data: any) => Promise<any>> = {
+  studentId: handleStudentId,
+  // Add more handlers here as needed
+};
+
+export async function POST(req: NextRequest, res: NextResponse) {
+  const data: Data = await req.json();
+  console.log("issue credential: ", data);
+
+  const handler = handlers[data.type];
+  if (!data.recipient || !handler) {
+    return NextResponse.json(
+      { error: true, message: "Missing wallet or invalid type" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const apiResponse = await handler(data);
+    return NextResponse.json(apiResponse, { status: 200 });
   } catch (error) {
     console.log("failed to issue vc");
     return NextResponse.json(
@@ -63,3 +59,43 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
   }
 }
+
+// export async function POST(req: NextRequest, res: NextResponse) {
+
+//     const data = await req.json();
+//     console.log("issue credential: ", data);
+
+//   if (!data.recipient) {
+//     return NextResponse.json(
+//       { error: true, message: "Missing wallet" },
+//       { status: 400 }
+//     );
+//   }
+
+//     if (data.recipient) {
+//       let apiResponse;
+
+//       switch (data.type) {
+//         case "studentId":
+//           apiResponse = await handleStudentId(data);
+//           break;
+
+//         default:
+//           break;
+//       }
+
+//       return NextResponse.json(apiResponse, { status: 200 });
+//     } else {
+//       return NextResponse.json(
+//         { error: true, message: "Missing wallet" },
+//         { status: 400 }
+//       );
+//     }
+//   } catch (error) {
+//     console.log("failed to issue vc");
+//     return NextResponse.json(
+//       { message: "Error issuing credential" },
+//       { status: 500 }
+//     );
+//   }
+// }

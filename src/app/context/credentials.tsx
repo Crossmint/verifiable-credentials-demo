@@ -24,7 +24,7 @@ type NFT = {
   tokenStandard: string;
 };
 
-type Collection = {
+export type Collection = {
   contractAddress: string;
   metadata?: any;
   nfts: NFT[];
@@ -40,6 +40,7 @@ type CredentialContextType = {
   decrypt: Function;
   verify: Function;
   wallet: Wallet;
+  refreshCredentials: Function;
 };
 
 const CredentialContext = createContext<CredentialContextType | null>(null);
@@ -63,32 +64,33 @@ export function CredentialProvider({
 
   useEffect(() => {
     if (wallet?.address) {
-      const getCollections = async (wallet: string) => {
-        const collections: any = await getCredentialCollections(
-          "polygon",
-          wallet,
-          undefined,
-          environment
-        );
-
-        const validContracts = [
-          "0x4bA6A45Da8A7039f5b1ED466971719F26790f733", // student id
-          "0xfB93e9e1466110F5114B9D65c3E68615057E62A8", // courses
-          "0x010beF737dA4f831EaBAf0B6460e5b3Df32Ec9F5", // certificate
-        ];
-
-        const filtered = collections.filter((obj: any) =>
-          validContracts.includes(obj.contractAddress)
-        );
-
-        setCollections(filtered);
-      };
-
       getCollections(wallet?.address);
     }
   }, [wallet?.address]);
 
-  const retrieveCredential = async (id: string) => {
+  const getCollections = async (wallet: string) => {
+    const collections: any = await getCredentialCollections(
+      "polygon",
+      wallet,
+      undefined,
+      environment
+    );
+
+    const validContracts = [
+      "0xC54424bd19462ad3358404c24523C9752f9D8B34", // student id (encrypted)
+      //"0x4bA6A45Da8A7039f5b1ED466971719F26790f733", // student id
+      "0xfB93e9e1466110F5114B9D65c3E68615057E62A8", // courses
+      "0x010beF737dA4f831EaBAf0B6460e5b3Df32Ec9F5", // certificate
+    ];
+
+    const filtered = collections.filter((obj: any) =>
+      validContracts.includes(obj.contractAddress)
+    );
+
+    setCollections(filtered);
+  };
+
+  const retrieve = async (id: string) => {
     console.log("id: ", id);
     getCredentialFromId(id, environment).then((data: any) => {});
 
@@ -97,18 +99,22 @@ export function CredentialProvider({
     };
   };
 
-  const decryptCredential = () => {};
+  const decrypt = () => {};
 
-  const verifyCredential = () => {};
+  const verify = (credential: VerifiableCredential) => {
+    console.log("credentials.tsx verify called", credential);
+    return verifyCredential(credential);
+  };
 
   return (
     <CredentialContext.Provider
       value={{
         collections: collections || [],
-        retrieve: retrieveCredential,
-        decrypt: decryptCredential,
-        verify: verifyCredential,
+        retrieve: retrieve,
+        decrypt: decrypt,
+        verify: verify,
         wallet: wallet || { address: "" },
+        refreshCredentials: () => getCollections(wallet?.address || ""),
       }}
     >
       {children}

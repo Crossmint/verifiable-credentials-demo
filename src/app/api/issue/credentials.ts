@@ -1,7 +1,14 @@
+interface Attribute {
+  trait_type: string;
+  value: string | number;
+  display_type?: string;
+}
+
 interface Metadata {
   name: string;
   image: string;
   description: string;
+  attributes?: Attribute[];
 }
 
 interface StudentId {
@@ -28,7 +35,7 @@ interface Course {
       finalGrade: number;
       issueDate: Date;
     };
-    expiresAt: Date;
+    expiresAt: string;
   };
 }
 
@@ -41,7 +48,7 @@ interface Certificate {
       overallGrade: number;
       issueDate: Date;
     };
-    expiresAt: Date;
+    expiresAt: string;
   };
 }
 
@@ -53,10 +60,16 @@ export function createStudentId(
 ): StudentId {
   return {
     metadata: {
-      name: "Shibetoshi University ID",
+      name: "Shibetoshi Student ID",
       image: "ipfs://QmUi84qorq5CBi8AUn5JpX77BPP9ARkkWdssfFNpSsRU86",
       description:
         "Used to access university programs, campuses, and platforms.",
+      attributes: [
+        {
+          trait_type: "credentialType",
+          value: "studentId",
+        },
+      ],
     },
     recipient,
     credential: {
@@ -66,7 +79,7 @@ export function createStudentId(
         studentId: generateStudentId(),
         secret,
       },
-      expiresAt: "2034-02-12",
+      expiresAt: getExpiryDate(10),
     },
   };
 }
@@ -104,6 +117,12 @@ export function createCertificate(
       image: "ipfs://QmWagNXyhNsB9Zheb1ek4KCdAXJrqfGePVfp66Ea8MXq9c",
       description:
         "Demonstrates completion of the blockchain fundamentals certificate program.",
+      attributes: [
+        {
+          trait_type: "credentialType",
+          value: "blockchainCertificate",
+        },
+      ],
     },
     recipient,
     credential: {
@@ -117,10 +136,10 @@ export function createCertificate(
   };
 }
 
-export function getExpiryDate(yearsFromNow: number): Date {
+export function getExpiryDate(yearsFromNow: number): string {
   const date = new Date();
   date.setFullYear(date.getFullYear() + yearsFromNow);
-  return date;
+  return date.toISOString().split("T")[0];
 }
 
 export function generateStudentId(): string {

@@ -12,23 +12,27 @@ import Credential from "@components/Credential";
 //   (data: any) => console.log(data)
 // );
 
-const getCredential = async (context: any) => {
-  const idCred = await context
-    .getCredentialFromId(
-      "urn:uuid:6a6658bf-3411-4b9f-8ed2-200dc212cb88",
-      "staging"
-    )
-    .then((data: any) => {
-      console.log("please...", data);
-    });
+// const getCredential = async (context: any) => {
+//   const idCred = await context
+//     .getCredentialFromId(
+//       "urn:uuid:6a6658bf-3411-4b9f-8ed2-200dc212cb88",
+//       "staging"
+//     )
+//     .then((data: any) => {
+//       console.log("please...", data);
+//     });
 
-  return idCred;
-};
+//   return idCred;
+// };
 
 const Page = () => {
   const credentialContext = useCredentials();
   const collections = credentialContext?.collections;
   const wallet = credentialContext?.wallet;
+
+  const refreshCredentials = () => {
+    credentialContext?.refreshCredentials(wallet?.address);
+  };
 
   return (
     <>
@@ -39,6 +43,7 @@ const Page = () => {
           collection.nfts.map((nft) => (
             <Credential
               key={nft.metadata.credentialId}
+              credentialId={nft.metadata.credentialId}
               imageUrl={nft.metadata.image}
               title={nft.metadata.name}
               description={nft.metadata.description}
@@ -46,6 +51,13 @@ const Page = () => {
           ))
         )}
       </div>
+
+      <button
+        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={refreshCredentials}
+      >
+        Refresh
+      </button>
     </>
   );
 };
