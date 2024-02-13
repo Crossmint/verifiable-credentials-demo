@@ -65,7 +65,7 @@ export const courses = [
     image:
       "https://sapphire-controlled-herring-537.mypinata.cloud/ipfs/QmRonNmktP1YhzeNq99WSJ8muityjD8Dzd2hAcfMbiTrGT",
     courseNumber: "201",
-    prerequisites: ["studentId", "BC101"],
+    prerequisites: ["studentId", "BC101", "WL102"],
     test: [],
   },
   {
@@ -76,7 +76,7 @@ export const courses = [
     image:
       "https://sapphire-controlled-herring-537.mypinata.cloud/ipfs/QmekAhN6F5nCm796iRWNi8JJWm5kVobegLjkFqF6UESB5k",
     courseNumber: "201",
-    prerequisites: ["studentId", "BC101"],
+    prerequisites: ["studentId", "BC101", "WL102"],
     test: [],
   },
   {
@@ -87,7 +87,7 @@ export const courses = [
     image:
       "https://sapphire-controlled-herring-537.mypinata.cloud/ipfs/Qmf1vaTFAxnij6QaGbLCyMVSB4n6WaF2Z9Cg156ztvs4ji",
     courseNumber: "301",
-    prerequisites: ["studentId", "BC101"],
+    prerequisites: ["studentId", "BC101", "WL102", "NFT201", "DF201"],
     test: [],
   },
 ];
