@@ -7,9 +7,6 @@ settings:
 dependencies:
   '@crossmint/client-sdk-verifiable-credentials':
     specifier: ^1.2.1
-    version: link:../crossmint-sdk/packages/client/verifiable-credentials
-  '@crossmint/verify-credentials':
-    specifier: ^1.2.1
     version: 1.2.1(@ethersproject/contracts@5.7.0)(@ethersproject/hash@5.7.0)(react@18.2.0)
   '@dynamic-labs/ethereum':
     specifier: ^1.0.9
@@ -29,6 +26,9 @@ dependencies:
   react-dom:
     specifier: ^18
     version: 18.2.0(react@18.2.0)
+  react-icons:
+    specifier: ^5.0.1
+    version: 5.0.1(react@18.2.0)
 
 devDependencies:
   '@types/node':
@@ -236,9 +236,10 @@ packages:
     resolution: {integrity: sha512-KvvX58MGMWh7xA+N+deCfunkA/ZNDvFLw4YbOmX3f/XBIkqrVY7qlotfy2aNb1kgp6h4B6Yc8YawJPDTfvWX7g==}
     dev: false
 
-  /@crossmint/verify-credentials@1.2.1(@ethersproject/contracts@5.7.0)(@ethersproject/hash@5.7.0)(react@18.2.0):
-    resolution: {integrity: sha512-/evcPIH/Tt9yubMdaTfhkSQgVNtjVyuqTeKD61IdvL43zVFMcM2+SPLtREfamv92QF82Pzw0wjcyMzvF3YF/gw==}
+  /@crossmint/client-sdk-verifiable-credentials@1.2.1(@ethersproject/contracts@5.7.0)(@ethersproject/hash@5.7.0)(react@18.2.0):
+    resolution: {integrity: sha512-k6keEUSmxn6p9EKaGx6oQldkytRNMj28eR7wtTNxhr83ywVduqLCFPnMWnpKLNUWmXYBz3UfmHyHdPozGMlKzQ==}
     dependencies:
+      '@crossmint/common-sdk-base': 0.0.3
       '@ethersproject/providers': 5.7.2
       '@ethersproject/wallet': 5.7.0
       '@krebitdao/eip712-vc': 1.0.3
@@ -266,6 +267,13 @@ packages:
       - react
       - supports-color
       - utf-8-validate
+    dev: false
+
+  /@crossmint/common-sdk-base@0.0.3:
+    resolution: {integrity: sha512-TzVjuaC2JI4Zat0av94veHoRn2ODomw/3fjrOTW0u5KbguALTstn2kCdphatCD4KCDA1uq1XjEqpFa+EQl2Yjw==}
+    dependencies:
+      bs58: 5.0.0
+      tweetnacl: 1.0.3
     dev: false
 
   /@dynamic-labs/ethereum@1.0.9(@dynamic-labs/logger@1.0.9)(@dynamic-labs/sdk-api@0.0.347)(react-dom@18.2.0)(react@18.2.0)(viem@1.21.4):
@@ -3173,6 +3181,10 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
+  /base-x@4.0.0:
+    resolution: {integrity: sha512-FuwxlW4H5kh37X/oW59pwTzzTKRzfrrQwhmyspRM7swOEZcHtDZSCt45U6oKgtuFE+WYPblePMVIPR4RZrh/hw==}
+    dev: false
+
   /base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
     dev: false
@@ -3292,6 +3304,12 @@ packages:
     resolution: {integrity: sha512-Ok3Wdf5vOIlBrgCvTq96gBkJw+JUEzdBgyaza5HLtPm7yTHkjRy8+JzNyHF7BHa0bNWOQIp3m5YF0nnFcOIKLw==}
     dependencies:
       base-x: 3.0.9
+    dev: false
+
+  /bs58@5.0.0:
+    resolution: {integrity: sha512-r+ihvQJvahgYT50JD05dyJNKlmmSlMoOGwn1lCcEzanPglg7TxYjioQUYehQ9mAR/+hOSd2jRc/Z2y5UxBymvQ==}
+    dependencies:
+      base-x: 4.0.0
     dev: false
 
   /buffer-alloc-unsafe@1.1.0:
@@ -4617,7 +4635,7 @@ packages:
     resolution: {integrity: sha512-nZeamxfymIWLpVcAN0CRrb7uVq3hCOGj9IcL6NMA6VVCVWqj+h9Jo/SmaWuS92AEDf1thmHsM5D5c70hM3j2Tg==}
     dependencies:
       sparse-array: 1.3.2
-      uint8arrays: 5.0.1
+      uint8arrays: 5.0.2
     dev: false
 
   /has-bigints@1.0.2:
@@ -6574,6 +6592,14 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /react-icons@5.0.1(react@18.2.0):
+    resolution: {integrity: sha512-WqLZJ4bLzlhmsvme6iFdgO8gfZP17rfjYEJ2m9RsZjZ+cc4k1hTzknEz63YS1MeT50kVzoa1Nz36f4BEx+Wigw==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -7390,7 +7416,7 @@ packages:
   /uint8arraylist@2.4.8:
     resolution: {integrity: sha512-vc1PlGOzglLF0eae1M8mLRTBivsvrGsdmJ5RbK3e+QRvRLOZfZhQROTwH/OfyF3+ZVUg9/8hE8bmKP2CvP9quQ==}
     dependencies:
-      uint8arrays: 5.0.1
+      uint8arrays: 5.0.2
     dev: false
 
   /uint8arrays@3.1.1:
@@ -7405,8 +7431,8 @@ packages:
       multiformats: 12.1.3
     dev: false
 
-  /uint8arrays@5.0.1:
-    resolution: {integrity: sha512-ND5RpJAnPgHmZT7hWD/2T4BwRp04j8NLKvMKC/7bhiEwEjUMkQ4kvBKiH6hOqbljd6qJ2xS8reL3vl1e33grOQ==}
+  /uint8arrays@5.0.2:
+    resolution: {integrity: sha512-S0GaeR+orZt7LaqzTRs4ZP8QqzAauJ+0d4xvP2lJTA99jIkKsE2FgDs4tGF/K/z5O9I/2W5Yvrh7IuqNeYH+0Q==}
     dependencies:
       multiformats: 13.0.1
     dev: false
