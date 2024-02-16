@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useCredentials } from "@context/credentials";
 import Modal from "@components/Modal";
+import Overlay from "@components/Overlay";
 import NewStudent from "@components/NewStudent";
 import StudentIdCard from "../components/StudentIdCard";
 import { FaBookDead, FaGithub } from "react-icons/fa";
@@ -15,9 +17,14 @@ type Wallet = {
 const Content = () => {
   const [wallet, setWallet] = useState<Wallet | null>();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const { primaryWallet } = useDynamicContext();
+  const credentialContext = useCredentials();
+  const collections = credentialContext?.collections;
   const formRef = useRef<HTMLFormElement>(null);
+
+  console.log("collections: ", collections);
 
   useEffect(() => {
     setWallet(primaryWallet);
@@ -30,6 +37,7 @@ const Content = () => {
   const submitForm = async () => {
     if (formRef.current && wallet?.address) {
       console.log("create student id");
+      setIsProcessing(true);
 
       const formData = new FormData(formRef.current);
 
@@ -47,6 +55,7 @@ const Content = () => {
 
       if (studentIdCred.credentialId) {
         setIsModalOpen(false);
+        setIsProcessing(false);
       }
       console.log("studentIdCred:", studentIdCred);
     }
@@ -177,9 +186,11 @@ const Content = () => {
         submit={submitForm}
       >
         <form ref={formRef}>
-          <NewStudent />
+          <NewStudent wallet={wallet?.address || ""} />
         </form>
       </Modal>
+
+      <Overlay start={isProcessing} message="Processing..." />
     </>
   );
 };

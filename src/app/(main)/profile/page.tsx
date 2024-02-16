@@ -12,18 +12,15 @@ import Credential from "@components/Credential";
 //   (data: any) => console.log(data)
 // );
 
-// const getCredential = async (context: any) => {
-//   const idCred = await context
-//     .getCredentialFromId(
-//       "urn:uuid:6a6658bf-3411-4b9f-8ed2-200dc212cb88",
-//       "staging"
-//     )
-//     .then((data: any) => {
-//       console.log("please...", data);
-//     });
+const getCredential = async (context: any) => {
+  const idCred = await context
+    .retrieve("urn:uuid:628fe2cd-c350-4cca-ad00-06d3680c778c")
+    .then((data: any) => {
+      console.log("please...", data);
+    });
 
-//   return idCred;
-// };
+  return idCred;
+};
 
 const Page = () => {
   const credentialContext = useCredentials();
@@ -32,6 +29,7 @@ const Page = () => {
 
   const refreshCredentials = () => {
     credentialContext?.refreshCredentials(wallet?.address);
+    //getCredential(credentialContext);
   };
 
   return (

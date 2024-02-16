@@ -28,7 +28,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   useEffect(() => {
     const available = isCourseAvailable();
     setIsAvailable(available);
-    console.log(`Is ${course.name} available: ${isAvailable}`);
+    //console.log(`Is ${course.name} available: ${isAvailable}`);
   }, [course, collections]);
 
   const isCourseAvailable = () => {
@@ -47,12 +47,12 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
       // If the prerequisite is not present in the collections, return false
       if (!isPrerequisitePresent) {
-        console.log("failed check");
+        //console.log("failed check");
         return false;
       }
     }
 
-    console.log("passed check");
+    //console.log("passed check");
     // If all prerequisites are present in the collections, return true
     return true;
   };

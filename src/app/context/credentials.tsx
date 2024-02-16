@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import {
@@ -46,7 +48,8 @@ type CredentialContextType = {
 const CredentialContext = createContext<CredentialContextType | null>(null);
 
 const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
-CrossmintAPI.init(clientKey);
+CrossmintAPI.init(clientKey, ["https://nftstorage.link/ipfs/{cid}"]);
+//CrossmintAPI.init(clientKey);
 
 export function CredentialProvider({
   children,
@@ -64,6 +67,7 @@ export function CredentialProvider({
 
   useEffect(() => {
     if (wallet?.address) {
+      console.log("calling getCollections");
       getCollections(wallet?.address);
     }
   }, [wallet?.address]);
@@ -75,12 +79,15 @@ export function CredentialProvider({
       undefined,
       environment
     );
+    //{ types: ["StudentId"] },
+    console.log("credentialsContext", collections);
 
     const validContracts = [
-      "0xC54424bd19462ad3358404c24523C9752f9D8B34", // student id (encrypted)
+      "0xd9eeC3D7BE67F02Ca103c0C27fc45f4AA6612360", // student id (new / encrypted)
+      //"0xC54424bd19462ad3358404c24523C9752f9D8B34", // student id (encrypted)
       //"0x4bA6A45Da8A7039f5b1ED466971719F26790f733", // student id
-      "0xfB93e9e1466110F5114B9D65c3E68615057E62A8", // courses
-      "0x010beF737dA4f831EaBAf0B6460e5b3Df32Ec9F5", // certificate
+      //"0xfB93e9e1466110F5114B9D65c3E68615057E62A8", // courses
+      //"0x010beF737dA4f831EaBAf0B6460e5b3Df32Ec9F5", // certificate
     ];
 
     const filtered = collections.filter((obj: any) =>

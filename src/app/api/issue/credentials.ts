@@ -77,7 +77,7 @@ export function createStudentId(
         firstName,
         lastName,
         studentId: generateStudentId(),
-        secret,
+        secret: "",
       },
       expiresAt: getExpiryDate(10),
     },
