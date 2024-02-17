@@ -32,6 +32,14 @@ yarn install
 yarn run dev
 ```
 
+4. Create a Crossmint Developer Account
+
+- copy the sample.env file to `.env.local` and add the values. You will need:
+  - dynamic.xyz environment ID
+  - create a client API key in the Crossmint developer console
+  - create Types and Collections via API
+  - save those collection IDs to the `.env.local`
+
 Now, open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Use Cases
