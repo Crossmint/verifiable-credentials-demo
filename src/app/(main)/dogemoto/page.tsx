@@ -5,7 +5,6 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import Link from "next/link";
 import Modal from "@components/Modal";
 import Overlay from "@components/Overlay";
-import NewStudent from "@components/NewStudent";
 import { FaCheckCircle } from "react-icons/fa";
 
 type Wallet = {

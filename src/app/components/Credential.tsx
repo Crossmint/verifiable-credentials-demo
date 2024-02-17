@@ -1,9 +1,7 @@
+"use client";
+
 import React from "react";
 import { useCredentials } from "@context/credentials";
-import {
-  VerifiableCredential,
-  Lit,
-} from "@crossmint/client-sdk-verifiable-credentials";
 
 interface CredentialProps {
   credentialId: string;
