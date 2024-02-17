@@ -33,7 +33,7 @@ const Content = () => {
         </p>
         <p className="text-md mb-8 font-light">
           This page exists to demonstrate the functionality of third party
-          verification of your credentials. Imagine that you've navigated to a
+          verification of your credentials. Imagine that you have navigated to a
           different university website when using this page.
         </p>
 
