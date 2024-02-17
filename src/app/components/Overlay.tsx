@@ -11,7 +11,7 @@ const Overlay: React.FC<OverlayProps> = ({ start, message }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 wtf">
       <div className="text-center">
         <div className="animate-spin w-12 h-12 border-t-4 border-blue-500 rounded-full mx-auto mb-4"></div>
         <p className="text-white">{message}</p>

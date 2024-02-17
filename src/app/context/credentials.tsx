@@ -7,7 +7,6 @@ import {
   VerifiableCredential,
   getCredentialFromId,
   getCredentialCollections,
-  getMetadata,
   CrossmintAPI,
   Lit,
 } from "@crossmint/client-sdk-verifiable-credentials";
@@ -21,6 +20,7 @@ type NFT = {
     description: string;
     credentialId: string;
     image: string;
+    attributes?: any;
   };
   tokenId: string;
   tokenStandard: string;
@@ -43,31 +43,29 @@ type CredentialContextType = {
   verify: Function;
   wallet: Wallet;
   refreshCredentials: Function;
+  hasStudentId: boolean;
+  completedCourses: string[];
 };
 
 const CredentialContext = createContext<CredentialContextType | null>(null);
 
 const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
-CrossmintAPI.init(clientKey, ["https://nftstorage.link/ipfs/{cid}"]);
-//CrossmintAPI.init(clientKey);
+CrossmintAPI.init(clientKey, ["https://ipfs.io/ipfs/{cid}"]);
 
 export function CredentialProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [wallet, setWallet] = useState<Wallet | null>();
   const [collections, setCollections] = useState<Collection[] | null>(null);
-  const { primaryWallet } = useDynamicContext();
+  const [hasStudentId, setHasStudentId] = useState(false);
+  const [completedCourses, setCompletedCourses] = useState<string[]>([]);
+
+  const { primaryWallet: wallet } = useDynamicContext();
   const environment = process.env.NEXT_PUBLIC_CROSSMINT_ENV || "";
 
   useEffect(() => {
-    setWallet(primaryWallet);
-  }, [primaryWallet]);
-
-  useEffect(() => {
     if (wallet?.address) {
-      console.log("calling getCollections");
       getCollections(wallet?.address);
     }
   }, [wallet?.address]);
@@ -76,17 +74,16 @@ export function CredentialProvider({
     const collections: any = await getCredentialCollections(
       "polygon",
       wallet,
-      undefined,
+      {
+        issuers: ["did:polygon:0xa22CaDEdE67c11dc1444E507fDdd9b831a67aBd1"],
+        types: ["StudentId", "CourseSchema"],
+      },
       environment
     );
-    //{ types: ["StudentId"] },
-    console.log("credentialsContext", collections);
 
     const validContracts = [
-      "0xd9eeC3D7BE67F02Ca103c0C27fc45f4AA6612360", // student id (new / encrypted)
-      //"0xC54424bd19462ad3358404c24523C9752f9D8B34", // student id (encrypted)
-      //"0x4bA6A45Da8A7039f5b1ED466971719F26790f733", // student id
-      //"0xfB93e9e1466110F5114B9D65c3E68615057E62A8", // courses
+      "0xd9eeC3D7BE67F02Ca103c0C27fc45f4AA6612360", // student id
+      "0x6cacd4EC40967FfC7430c2cD552bcF8B2c61391f", // courses
       //"0x010beF737dA4f831EaBAf0B6460e5b3Df32Ec9F5", // certificate
     ];
 
@@ -94,7 +91,34 @@ export function CredentialProvider({
       validContracts.includes(obj.contractAddress)
     );
 
+    console.log("filtered:", filtered);
     setCollections(filtered);
+
+    const studentIdExists = collections.some(
+      (collection: any) =>
+        collection.contractAddress ===
+        "0xd9eeC3D7BE67F02Ca103c0C27fc45f4AA6612360"
+    );
+    setHasStudentId(studentIdExists);
+
+    const completed: string[] = filtered.flatMap((collection: Collection) =>
+      collection.nfts.flatMap((nft: NFT) => {
+        const courseAttributes = nft.metadata.attributes.filter(
+          (attribute: any) =>
+            attribute.trait_type === "credentialType" &&
+            attribute.value === "course"
+        );
+        if (courseAttributes.length > 0) {
+          const courseIdAttribute = nft.metadata.attributes.find(
+            (attribute: any) => attribute.trait_type === "courseId"
+          );
+          return courseIdAttribute ? courseIdAttribute.value : [];
+        }
+        return [];
+      })
+    );
+
+    setCompletedCourses(completed);
   };
 
   const retrieve = async (id: string) => {
@@ -122,6 +146,8 @@ export function CredentialProvider({
         verify: verify,
         wallet: wallet || { address: "" },
         refreshCredentials: () => getCollections(wallet?.address || ""),
+        hasStudentId: hasStudentId,
+        completedCourses: completedCourses,
       }}
     >
       {children}
@@ -129,7 +155,6 @@ export function CredentialProvider({
   );
 }
 
-// Create a custom hook for consuming the context
 export function useCredentials() {
   return useContext(CredentialContext);
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Collection } from "@context/credentials";
+import { FaCheckCircle } from "react-icons/fa";
 import { Fira_Code } from "next/font/google";
 
 const fira = Fira_Code({ subsets: ["latin"] });
@@ -17,48 +18,43 @@ interface CourseCardProps {
   course: Course;
   collections: Collection[];
   openCourse: Function;
+  completed: string[];
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({
   course,
   collections,
   openCourse,
+  completed,
 }) => {
-  const [isAvailable, setIsAvailable] = useState(false);
+  const [prereqsCompleted, setPrereqsCompleted] = useState(false);
+  const [courseCompleted, setCourseCompleted] = useState(false);
+
   useEffect(() => {
-    const available = isCourseAvailable();
-    setIsAvailable(available);
-    //console.log(`Is ${course.name} available: ${isAvailable}`);
-  }, [course, collections]);
+    isCourseCompleted();
+    arePrereqsCompleted();
+  }, [collections, completed]);
 
-  const isCourseAvailable = () => {
-    // Loop through each prerequisite of the course
-    for (let prerequisite of course.prerequisites) {
-      // Check if the prerequisite is present in the collections
-      let isPrerequisitePresent = collections.some((collection) =>
-        collection.nfts.some((nft: any) =>
-          nft.metadata.attributes.some(
-            (attribute: any) =>
-              attribute.trait_type === "credentialType" &&
-              attribute.value === prerequisite
-          )
-        )
-      );
-
-      // If the prerequisite is not present in the collections, return false
-      if (!isPrerequisitePresent) {
-        //console.log("failed check");
-        return false;
-      }
+  const isCourseCompleted = () => {
+    if (completed.includes(course.id)) {
+      setCourseCompleted(true);
     }
-
-    //console.log("passed check");
-    // If all prerequisites are present in the collections, return true
-    return true;
   };
 
+  const arePrereqsCompleted = () => {
+    setPrereqsCompleted(
+      course.prerequisites.every((prerequisite) =>
+        completed.includes(prerequisite)
+      )
+    );
+  };
+
+  const grayScale = courseCompleted ? "" : "course-img";
+
   return (
-    <div className="course-img flex bg-white rounded overflow-hidden shadow-lg relative">
+    <div
+      className={`${grayScale} flex bg-white rounded overflow-hidden shadow-lg relative`}
+    >
       <Image src={course.image} alt="Course image" width={256} height={256} />
 
       <div className="absolute top-3 right-3 bg-gray-400 text-white py-1 px-2 rounded">
@@ -81,13 +77,20 @@ const CourseCard: React.FC<CourseCardProps> = ({
           ))}
         </ul>
 
-        {isAvailable && (
+        {prereqsCompleted && !courseCompleted && (
           <button
             className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => openCourse(course.id)}
           >
             Take Course
           </button>
+        )}
+
+        {courseCompleted && (
+          <div className="flex items-center max-w-32 bg-green-200 text-green-700 mt-4 py-2 px-4 rounded">
+            <FaCheckCircle className="mr-1" />
+            <span>Completed</span>
+          </div>
         )}
       </div>
     </div>

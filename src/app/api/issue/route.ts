@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callCrossmintAPI } from "@/app/utils/crossmint";
-import { createStudentId } from "./credentials";
+import { createStudentId, createCourse } from "../../utils/credentials";
 
 // required for CORS
 export async function OPTIONS(req: NextRequest, res: NextResponse) {
@@ -23,17 +23,38 @@ const handleStudentId = async (data: any) => {
   return apiResponse;
 };
 
-type HandlerType = "studentId"; // Add more types as needed
+const handleCourse = async (data: {
+  recipient: string;
+  courseId: string;
+  finalGrade: number;
+}) => {
+  const { recipient, courseId, finalGrade } = data;
+  const body = createCourse(recipient, courseId, finalGrade);
+  const collectionId = process.env.NEXT_PUBLIC_COURSE_COLLECTION;
+
+  console.log("sending api reqeust...");
+
+  const apiResponse = await callCrossmintAPI(
+    `unstable/collections/${collectionId}/credentials`,
+    {
+      method: "POST",
+      body,
+    }
+  );
+
+  return apiResponse;
+};
+
+type HandlerType = "studentId" | "course";
 
 interface Data {
   type: HandlerType;
   recipient: string;
-  // Add more properties as needed
 }
 
 const handlers: Record<HandlerType, (data: any) => Promise<any>> = {
   studentId: handleStudentId,
-  // Add more handlers here as needed
+  course: handleCourse,
 };
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -59,43 +80,3 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
   }
 }
-
-// export async function POST(req: NextRequest, res: NextResponse) {
-
-//     const data = await req.json();
-//     console.log("issue credential: ", data);
-
-//   if (!data.recipient) {
-//     return NextResponse.json(
-//       { error: true, message: "Missing wallet" },
-//       { status: 400 }
-//     );
-//   }
-
-//     if (data.recipient) {
-//       let apiResponse;
-
-//       switch (data.type) {
-//         case "studentId":
-//           apiResponse = await handleStudentId(data);
-//           break;
-
-//         default:
-//           break;
-//       }
-
-//       return NextResponse.json(apiResponse, { status: 200 });
-//     } else {
-//       return NextResponse.json(
-//         { error: true, message: "Missing wallet" },
-//         { status: 400 }
-//       );
-//     }
-//   } catch (error) {
-//     console.log("failed to issue vc");
-//     return NextResponse.json(
-//       { message: "Error issuing credential" },
-//       { status: 500 }
-//     );
-//   }
-// }

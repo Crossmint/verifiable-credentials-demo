@@ -4,6 +4,7 @@ import { Roboto } from "next/font/google";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { CredentialProvider } from "@context/credentials";
+
 import Navigation from "@components/Navigation";
 import "./globals.css";
 

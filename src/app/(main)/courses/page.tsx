@@ -2,13 +2,17 @@
 
 import React, { useState, useRef } from "react";
 import { useCredentials } from "@context/credentials";
-import { courses, Course } from "./courses";
+import { courses, Course } from "../../utils/courses";
 import CourseCard from "@components/CourseCard";
+import { FaExclamationCircle } from "react-icons/fa";
 import Modal from "@components/Modal";
+import Overlay from "@components/Overlay";
 
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [currentCourse, setCurrentCourse] = useState<Course>();
+  const [testFailed, setTestFailed] = useState(false);
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -17,7 +21,7 @@ const Page = () => {
   const collections = credentialContext?.collections;
   const wallet = credentialContext?.wallet;
 
-  //console.log("courses", collections);
+  let completed = credentialContext?.completedCourses;
 
   const openCourse = (id: string) => {
     const course = courses.find((course) => course.id === id);
@@ -27,11 +31,12 @@ const Page = () => {
 
   const submitForm = () => {
     if (formRef.current) {
+      setIsProcessing(true);
       scoreTest();
     }
   };
 
-  const scoreTest = () => {
+  const scoreTest = async () => {
     console.log("currentCourse:", currentCourse);
     console.log("answers:", answers);
 
@@ -44,6 +49,46 @@ const Page = () => {
     });
 
     console.log(`Score: ${score}/${currentCourse?.test.length}`);
+    const finalGrade = score / Object.keys(answers).length;
+
+    if (finalGrade >= 0.8) {
+      setTestFailed(false); // clear possible error message
+      completed?.push(currentCourse?.id || "");
+
+      console.log("passing grade / issue credential...");
+      const data = {
+        type: "course",
+        courseId: currentCourse?.id,
+        finalGrade,
+        recipient: `polygon:${wallet?.address}`,
+      };
+
+      const courseCred = await issueCredential(data);
+
+      console.log(courseCred);
+
+      if (courseCred.credentialId) {
+        setIsModalOpen(false);
+        setIsProcessing(false);
+      }
+    } else {
+      console.log("80% required to pass course");
+      setTestFailed(true);
+      setIsProcessing(false);
+    }
+  };
+
+  const issueCredential = async (credential: any) => {
+    const response = await fetch("/api/issue", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credential),
+    });
+    const data = await response.json();
+
+    return data;
   };
 
   return (
@@ -59,17 +104,29 @@ const Page = () => {
             course={course}
             collections={collections || []}
             openCourse={openCourse}
+            completed={completed || []}
           />
         ))}
       </div>
 
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setTestFailed(false);
+        }}
         submit={submitForm}
       >
         <form ref={formRef}>
           <h2 className="text-2xl font-bold mb-4">{currentCourse?.name}</h2>
+
+          {testFailed && (
+            <div className="flex items-center bg-red-200 text-red-700 px-3 py-2 my-4 rounded">
+              <FaExclamationCircle className="mr-2" />
+              <span>You failed the test. Please try again.</span>
+            </div>
+          )}
+
           {currentCourse &&
             currentCourse.test.map((quiz, index) => (
               <div key={index} className="mb-6">
@@ -103,6 +160,8 @@ const Page = () => {
             ))}
         </form>
       </Modal>
+
+      <Overlay start={isProcessing} message="Processing..." />
     </>
   );
 };

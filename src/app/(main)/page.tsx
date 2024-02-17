@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useCredentials } from "@context/credentials";
+import Link from "next/link";
 import Modal from "@components/Modal";
 import Overlay from "@components/Overlay";
 import NewStudent from "@components/NewStudent";
@@ -10,33 +10,20 @@ import StudentIdCard from "../components/StudentIdCard";
 import { FaBookDead, FaGithub } from "react-icons/fa";
 import { SiW3C } from "react-icons/si";
 
-type Wallet = {
-  address: string;
-};
-
 const Content = () => {
-  const [wallet, setWallet] = useState<Wallet | null>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const { primaryWallet } = useDynamicContext();
   const credentialContext = useCredentials();
-  const collections = credentialContext?.collections;
   const formRef = useRef<HTMLFormElement>(null);
-
-  console.log("collections: ", collections);
-
-  useEffect(() => {
-    setWallet(primaryWallet);
-  }, [primaryWallet]);
+  const walletAddress = credentialContext?.wallet?.address;
 
   const openSignup = () => {
     setIsModalOpen(true);
   };
 
   const submitForm = async () => {
-    if (formRef.current && wallet?.address) {
-      console.log("create student id");
+    if (formRef.current && walletAddress) {
       setIsProcessing(true);
 
       const formData = new FormData(formRef.current);
@@ -46,10 +33,8 @@ const Content = () => {
         firstName: formData.get("firstName"),
         lastName: formData.get("lastName"),
         secret: formData.get("secret"),
-        recipient: `polygon:${wallet?.address}`,
+        recipient: `polygon:${walletAddress}`,
       };
-
-      console.log("test", data);
 
       const studentIdCred = await issueCredential(data);
 
@@ -74,34 +59,6 @@ const Content = () => {
     return data;
   };
 
-  const retrieveCredentials = async () => {
-    const response = await fetch("/api/retrieve", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        wallet: wallet?.address,
-      }),
-    });
-    const data = await response.json();
-    console.log(data);
-  };
-
-  const verifyCredential = async () => {
-    const response = await fetch("/api/verify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        wallet: wallet?.address,
-      }),
-    });
-    const data = await response.json();
-    console.log(data);
-  };
-
   return (
     <>
       <div className="container mx-auto px-4">
@@ -112,20 +69,39 @@ const Content = () => {
           Your journey to learning and growth starts here.
         </p>
 
-        <div className="bg-blue-100 p-6 rounded-lg mb-8 relative flex">
+        <div className="bg-gray-100 p-6 rounded-lg mb-8 relative flex">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold mb-4">Get Started</h2>
-            <p className="mb-4 max-w-xl">
-              To get started with the demo you need to create your Shibetoshi
-              University Student ID. This is a verifiable credential that
-              represents your identity in the university.
-            </p>
-            <button
-              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white text--2xl font-bold py-4 px-6 rounded"
-              onClick={() => openSignup()}
-            >
-              Create Student ID
-            </button>
+            {credentialContext?.hasStudentId ? (
+              <>
+                <h2 className="text-2xl font-bold mb-4">
+                  Check out the courses
+                </h2>
+                <p className="mb-4 max-w-xl">
+                  Now that you have your student ID you can check out the course
+                  catalog to start learning!
+                </p>
+                <Link href="/courses">
+                  <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white text--2xl font-bold py-4 px-6 rounded">
+                    Course Catalog
+                  </button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold mb-4">Get Started</h2>
+                <p className="mb-4 max-w-xl">
+                  To get started with the demo you need to create your
+                  Shibetoshi University Student ID. This is a verifiable
+                  credential that represents your identity in the university.
+                </p>
+                <button
+                  className="mt-4 bg-blue-500 hover:bg-blue-700 text-white text--2xl font-bold py-4 px-6 rounded"
+                  onClick={() => openSignup()}
+                >
+                  Create Student ID
+                </button>
+              </>
+            )}
           </div>
           <div className="ml-6">
             <StudentIdCard />
@@ -135,7 +111,7 @@ const Content = () => {
         <h2 className="text-2xl font-bold mb-8">Ready to build?</h2>
 
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-blue-100 p-6 rounded-lg relative">
+          <div className="bg-gray-100 p-6 rounded-lg relative">
             <h3 className="font-bold mb-2">Docs</h3>
             <FaBookDead
               title="Docs link"
@@ -149,7 +125,7 @@ const Content = () => {
               Check out the Docs
             </a>
           </div>
-          <div className="bg-blue-100 p-6 rounded-lg relative">
+          <div className="bg-gray-100 p-6 rounded-lg relative">
             <h3 className="font-bold mb-2">GitHub Repo</h3>
             <FaGithub
               title="Github link"
@@ -163,7 +139,7 @@ const Content = () => {
               Go to GitHub Repo
             </a>
           </div>
-          <div className="bg-blue-100 p-6 rounded-lg relative">
+          <div className="bg-gray-100 p-6 rounded-lg relative">
             <h3 className="font-bold mb-2">W3C Standard</h3>
             <SiW3C
               title="W3C link"
@@ -178,6 +154,26 @@ const Content = () => {
             </a>
           </div>
         </div>
+
+        <h2 className="text-2xl font-bold mt-8 mb-4">
+          Verifying Credentials with an External Issuer
+        </h2>
+
+        <div className="bg-gray-100 p-6 rounded-lg mb-8 relative flex">
+          <p className="flex-1 text-lg mb-8">
+            The credentials that are issued to you from Shibetoshi University
+            can also be used as prerequisites at other Universities that
+            implement the verifiable credential standard.
+          </p>
+
+          <br />
+
+          <Link href="/dogemoto">
+            <button className="mt-4 bg-green-500 hover:bg-green-700 text-white text--2xl font-bold py-4 px-6 rounded">
+              Verify at Dogemoto
+            </button>
+          </Link>
+        </div>
       </div>
 
       <Modal
@@ -186,7 +182,7 @@ const Content = () => {
         submit={submitForm}
       >
         <form ref={formRef}>
-          <NewStudent wallet={wallet?.address || ""} />
+          <NewStudent wallet={walletAddress || ""} />
         </form>
       </Modal>
 

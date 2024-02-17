@@ -9,7 +9,7 @@ export interface Course {
   name: string;
   description: string;
   image: string;
-  courseNumber: string;
+  courseNumber: number;
   prerequisites: string[];
   test: Question[];
 }
@@ -22,8 +22,8 @@ export const courses = [
       "An introduction to blockchain technology fundamentals, focusing on its cryptographic underpinnings, distributed ledger mechanisms, and the technical architecture that supports decentralized applications (dApps).",
     image:
       "https://sapphire-controlled-herring-537.mypinata.cloud/ipfs/Qmc8KojcgWYyGirPa8kwVgX79UApqUnwEsvHGLzSG5qaPx",
-    courseNumber: "101",
-    prerequisites: ["studentId"],
+    courseNumber: 101,
+    prerequisites: [],
     test: [
       {
         question: "Who wrote the bitcoin whitepaper?",
@@ -53,9 +53,20 @@ export const courses = [
       "Technical overview of digital wallet technology, including the security protocols, encryption techniques, and key management strategies essential for secure cryptocurrency transactions and asset management.",
     image:
       "https://sapphire-controlled-herring-537.mypinata.cloud/ipfs/QmUPJhUSJFYL3AoQS3BEBLbLX1cD2hSJFSEVGVV96xMn8i",
-    courseNumber: "102",
-    prerequisites: ["studentId", "BC101"],
-    test: [],
+    courseNumber: 102,
+    prerequisites: ["BC101"],
+    test: [
+      {
+        question: "Which of the following is NOT a type of web3 wallet?",
+        options: [
+          "Custodial",
+          "Self-custody",
+          "Smart Contract",
+          "Carbon Fiber",
+        ],
+        answer: ["Carbon Fiber"],
+      },
+    ],
   },
   {
     id: "NFT201",
@@ -64,9 +75,20 @@ export const courses = [
       "A technical exploration into Non-Fungible Tokens (NFTs), addressing their digital uniqueness, smart contract creation, and the underlying blockchain protocols that facilitate digital ownership and authenticity.",
     image:
       "https://sapphire-controlled-herring-537.mypinata.cloud/ipfs/QmRonNmktP1YhzeNq99WSJ8muityjD8Dzd2hAcfMbiTrGT",
-    courseNumber: "201",
-    prerequisites: ["studentId", "BC101", "WL102"],
-    test: [],
+    courseNumber: 201,
+    prerequisites: ["BC101", "WL102"],
+    test: [
+      {
+        question: "Which token standard creates provably unique tokens?",
+        options: ["ERC-20", "ERC-721", "ERC-1155"],
+        answer: ["ERC-721"],
+      },
+      {
+        question: "What process is used to create a new NFT?",
+        options: ["Mining", "Staking", "Trading", "Minting"],
+        answer: ["Minting"],
+      },
+    ],
   },
   {
     id: "DF201",
@@ -75,9 +97,16 @@ export const courses = [
       "Detailed examination of Decentralized Finance (DeFi) technologies, emphasizing smart contracts, decentralized applications (dApps) development, and the cryptographic algorithms enabling autonomous financial systems.",
     image:
       "https://sapphire-controlled-herring-537.mypinata.cloud/ipfs/QmekAhN6F5nCm796iRWNi8JJWm5kVobegLjkFqF6UESB5k",
-    courseNumber: "201",
-    prerequisites: ["studentId", "BC101", "WL102"],
-    test: [],
+    courseNumber: 201,
+    prerequisites: ["BC101", "WL102"],
+    test: [
+      {
+        question:
+          "What term describes earning interest on your crypto by lending it through a DeFi platform?",
+        options: ["Staking", "Yield Farming", "HODling", "Mining"],
+        answer: ["Yield Farming"],
+      },
+    ],
   },
   {
     id: "GM301",
@@ -86,8 +115,8 @@ export const courses = [
       "Advanced study of blockchain technology in gaming, covering the development of on-chain gaming platforms, integration of cryptocurrency and NFT assets, and the implications of blockchain for game economies and design.",
     image:
       "https://sapphire-controlled-herring-537.mypinata.cloud/ipfs/Qmf1vaTFAxnij6QaGbLCyMVSB4n6WaF2Z9Cg156ztvs4ji",
-    courseNumber: "301",
-    prerequisites: ["studentId", "BC101", "WL102", "NFT201", "DF201"],
+    courseNumber: 301,
+    prerequisites: ["BC101", "WL102", "NFT201", "DF201"],
     test: [],
   },
 ];

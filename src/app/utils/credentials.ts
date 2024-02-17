@@ -1,3 +1,5 @@
+import { courses } from "./courses";
+
 interface Attribute {
   trait_type: string;
   value: string | number;
@@ -33,7 +35,7 @@ interface Course {
       courseName: string;
       courseNumber: number;
       finalGrade: number;
-      issueDate: Date;
+      issueDate: number;
     };
     expiresAt: string;
   };
@@ -46,7 +48,7 @@ interface Certificate {
     subject: {
       certificateName: string;
       overallGrade: number;
-      issueDate: Date;
+      issueDate: number;
     };
     expiresAt: string;
   };
@@ -85,21 +87,20 @@ export function createStudentId(
 }
 
 export function createCourse(
-  metadata: Metadata,
   recipient: string,
-  courseName: string,
-  courseNumber: number,
+  courseId: string,
   finalGrade: number
 ): Course {
+  const course = getCourseById(courseId);
   return {
-    metadata,
+    metadata: course.metadata,
     recipient,
     credential: {
       subject: {
-        courseName,
-        courseNumber,
+        courseName: course.name,
+        courseNumber: course.number,
         finalGrade,
-        issueDate: new Date(),
+        issueDate: Date.now(),
       },
       expiresAt: getExpiryDate(10),
     },
@@ -129,21 +130,47 @@ export function createCertificate(
       subject: {
         certificateName,
         overallGrade,
-        issueDate: new Date(),
+        issueDate: Date.now(),
       },
       expiresAt: getExpiryDate(10),
     },
   };
 }
 
-export function getExpiryDate(yearsFromNow: number): string {
+function getExpiryDate(yearsFromNow: number): string {
   const date = new Date();
   date.setFullYear(date.getFullYear() + yearsFromNow);
   return date.toISOString().split("T")[0];
+
+  //return Math.floor(Date.now() / 1000);
 }
 
-export function generateStudentId(): string {
+function generateStudentId(): string {
   const min = 10000000;
   const max = 99999999;
   return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
+}
+
+function getCourseById(courseId: string): any {
+  const course = courses.find((course) => course.id === courseId);
+
+  return {
+    name: course?.name,
+    number: course?.courseNumber,
+    metadata: {
+      name: course?.name,
+      image: course?.image,
+      description: course?.description,
+      attributes: [
+        {
+          trait_type: "credentialType",
+          value: "course",
+        },
+        {
+          trait_type: "courseId",
+          value: course?.id,
+        },
+      ],
+    },
+  };
 }
