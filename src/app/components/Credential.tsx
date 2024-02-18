@@ -1,13 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useCredentials } from "@context/credentials";
+import { FaCheckCircle } from "react-icons/fa";
 
 interface CredentialProps {
   credentialId: string;
   imageUrl: string;
   title: string;
   description: string;
+  setIsProcessing: Function;
 }
 
 const Credential: React.FC<CredentialProps> = ({
@@ -15,37 +17,47 @@ const Credential: React.FC<CredentialProps> = ({
   imageUrl,
   title,
   description,
+  setIsProcessing,
 }) => {
+  const [isValid, setIsValid] = useState<boolean>();
   const credentialContext = useCredentials();
 
   const retrieveCredential = async () => {
-    // const response = await fetch(`/api/retrieve?id=${credentialId}`, {
-    //   method: "GET",
-    // });
-    // const data = await response.json();
-    // console.log(data);
+    setIsProcessing(true);
 
-    const credential = await credentialContext?.retrieve(credentialId);
+    try {
+      const credential = await credentialContext?.retrieve(credentialId);
+      const decrypted = await credentialContext?.decrypt(credential);
+      const verified = await credentialContext?.verify(decrypted);
 
-    const decrypted = await credentialContext?.decrypt(credential);
+      setIsValid(verified.validVC);
+    } catch (e) {
+      setIsValid(false);
+    }
 
-    //const verified = await credentialContext?.verify(decrypted);
-    //console.log("verified result", verified);
+    setIsProcessing(false);
   };
 
   return (
-    <div className="max-w-xs rounded overflow-hidden shadow-lg bg-white">
-      <img className="w-full" src={imageUrl} alt="credential image" />
+    <div className="flex rounded overflow-hidden shadow-lg bg-white">
+      <img className="max-w-64" src={imageUrl} alt="credential image" />
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2">{title}</div>
         <p className="text-gray-700 text-base">{description}</p>
 
-        <button
-          className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={retrieveCredential}
-        >
-          Verify Credential
-        </button>
+        {isValid ? (
+          <div className="flex items-center max-w-32 bg-green-200 text-green-700 mt-4 py-2 px-4 rounded">
+            <FaCheckCircle className="mr-1" />
+            <span>Verified</span>
+          </div>
+        ) : (
+          <button
+            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={retrieveCredential}
+          >
+            Verify Credential
+          </button>
+        )}
       </div>
     </div>
   );

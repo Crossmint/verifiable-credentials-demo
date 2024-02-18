@@ -62,26 +62,24 @@ export function CredentialProvider({
   const environment = process.env.NEXT_PUBLIC_CROSSMINT_ENV || "";
 
   useEffect(() => {
-    if (wallet?.address) {
-      const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
-      const serverKey = process.env.CROSSMINT_API_KEY || "";
-      CrossmintAPI.init(clientKey, ["https://ipfs.io/ipfs/{cid}"]);
-      const lit = new Lit();
+    const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
+    CrossmintAPI.init(clientKey, ["https://ipfs.io/ipfs/{cid}"]);
 
-      getCollections(wallet?.address);
-    }
-  }, [wallet?.address]);
+    getCollections(wallet?.address || "");
+  }, [wallet]);
 
   const getCollections = async (wallet: string) => {
-    const collections: any = await getCredentialCollections(
-      "polygon",
-      wallet,
-      {
-        issuers: ["did:polygon:0xa22CaDEdE67c11dc1444E507fDdd9b831a67aBd1"],
-        types: ["StudentId", "CourseSchema"],
-      },
-      environment
-    );
+    const collections: any = wallet
+      ? await getCredentialCollections(
+          "polygon",
+          wallet,
+          {
+            issuers: ["did:polygon:0xa22CaDEdE67c11dc1444E507fDdd9b831a67aBd1"],
+            types: ["StudentId", "CourseSchema"],
+          },
+          environment
+        )
+      : [];
 
     const validContracts = [
       "0xd9eeC3D7BE67F02Ca103c0C27fc45f4AA6612360", // student id
@@ -89,65 +87,64 @@ export function CredentialProvider({
       //"0x010beF737dA4f831EaBAf0B6460e5b3Df32Ec9F5", // certificate
     ];
 
-    const filtered = collections.filter((obj: any) =>
+    const filtered = collections?.filter((obj: any) =>
       validContracts.includes(obj.contractAddress)
     );
 
     console.log("filtered:", filtered);
-    setCollections(filtered);
+    setCollections(filtered || []);
 
-    const studentIdExists = collections.some(
+    const studentIdExists = collections?.some(
       (collection: any) =>
         collection.contractAddress ===
         "0xd9eeC3D7BE67F02Ca103c0C27fc45f4AA6612360"
     );
-    setHasStudentId(studentIdExists);
+    setHasStudentId(studentIdExists || false);
 
-    const completed: string[] = filtered.flatMap((collection: Collection) =>
-      collection.nfts.flatMap((nft: NFT) => {
-        const courseAttributes = nft.metadata.attributes.filter(
-          (attribute: any) =>
-            attribute.trait_type === "credentialType" &&
-            attribute.value === "course"
-        );
-        if (courseAttributes.length > 0) {
-          const courseIdAttribute = nft.metadata.attributes.find(
-            (attribute: any) => attribute.trait_type === "courseId"
+    const completed: any[] = (filtered || []).flatMap(
+      (collection: Collection) =>
+        collection.nfts.flatMap((nft: NFT) => {
+          const courseAttributes = nft.metadata.attributes.filter(
+            (attribute: any) =>
+              attribute.trait_type === "credentialType" &&
+              attribute.value === "course"
           );
-          return courseIdAttribute ? courseIdAttribute.value : [];
-        }
-        return [];
-      })
+          if (courseAttributes.length > 0) {
+            const courseIdAttribute = nft.metadata.attributes.find(
+              (attribute: any) => attribute.trait_type === "courseId"
+            );
+            return courseIdAttribute ? courseIdAttribute.value : [];
+          }
+          return [];
+        })
     );
 
     setCompletedCourses(completed);
   };
 
   const retrieve = async (id: string) => {
-    console.log("id: ", id);
-    const cred = await getCredentialFromId(id, environment);
+    console.debug("retrieving credential with id: ", id);
+    const credential = await getCredentialFromId(id, environment);
+    console.debug("retrieve credential result: ", credential);
 
-    console.log("cred: ", cred);
+    return credential;
   };
 
   const decrypt = async (credential: any) => {
     const lit = new Lit();
-    const output = await lit.decrypt(credential?.payload);
-    console.log("output: ", output);
+    console.debug("about to decrypt payload: ", credential.payload);
+    const decrypted = await lit.decrypt(credential?.payload);
+    console.debug("decrypt credential result: ", decrypted);
 
-    return output;
+    return JSON.parse(decrypted); // this JSON.parse should be removed on next SDK update
   };
 
   const verify = async (credential: VerifiableCredential) => {
-    console.log("credentials.tsx verify called", credential);
+    console.debug("about to verify credential: ", credential);
+    const verified = await verifyCredential(credential, environment);
+    console.debug("verify credential result:", verified);
 
-    const lit = new Lit();
-
-    //const output = await lit.decrypt(credential?.encryptedCredential?.payload);
-
-    //console.log("output: ", output);
-
-    return verifyCredential(credential);
+    return verified;
   };
 
   return (

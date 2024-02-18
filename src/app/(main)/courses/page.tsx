@@ -53,7 +53,6 @@ const Page = () => {
 
     if (finalGrade >= 0.8) {
       setTestFailed(false); // clear possible error message
-      completed?.push(currentCourse?.id || "");
 
       console.log("passing grade / issue credential...");
       const data = {
@@ -65,11 +64,9 @@ const Page = () => {
 
       const courseCred = await issueCredential(data);
 
-      console.log(courseCred);
-
       if (courseCred.credentialId) {
         setIsModalOpen(false);
-        setIsProcessing(false);
+        refreshCredentials();
       }
     } else {
       console.log("80% required to pass course");
@@ -91,11 +88,23 @@ const Page = () => {
     return data;
   };
 
+  const refreshCredentials = async () => {
+    setIsProcessing(true);
+    await credentialContext?.refreshCredentials(wallet?.address);
+    setIsProcessing(false);
+  };
+
   return (
     <>
-      <h1 className="text-2xl py-3 mb-10">
-        Blockchain Fundamentals | Course List
-      </h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl py-3">Blockchain Fundamentals | Course List</h1>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={refreshCredentials}
+        >
+          Refresh
+        </button>
+      </div>
 
       <div className="flex flex-wrap justify-start items-center gap-4">
         {courses?.map((course) => (
@@ -105,6 +114,7 @@ const Page = () => {
             collections={collections || []}
             openCourse={openCourse}
             completed={completed || []}
+            hasStudentId={credentialContext?.hasStudentId || false}
           />
         ))}
       </div>

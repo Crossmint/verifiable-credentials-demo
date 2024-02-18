@@ -39,8 +39,8 @@ const Content = () => {
         <div className="flex items-center bg-green-200 text-green-700 px-3 py-2 my-4 rounded">
           <FaCheckCircle className="mr-2" />
           <span>
-            Under the hood this page is using an API key under a completely
-            different project than Shibetoshi University
+            Under the hood this page is using an API key related to a different
+            project than Shibetoshi University.
           </span>
         </div>
 

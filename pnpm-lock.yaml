@@ -6,7 +6,7 @@ settings:
 
 dependencies:
   '@crossmint/client-sdk-verifiable-credentials':
-    specifier: ^2.1.0
+    specifier: 2.1.0
     version: 2.1.0(@ethersproject/contracts@5.7.0)(@ethersproject/hash@5.7.0)(react@18.2.0)
   '@dynamic-labs/ethereum':
     specifier: ^1.0.9

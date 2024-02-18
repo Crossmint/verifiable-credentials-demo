@@ -19,6 +19,7 @@ interface CourseCardProps {
   collections: Collection[];
   openCourse: Function;
   completed: string[];
+  hasStudentId: boolean;
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({
@@ -26,6 +27,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   collections,
   openCourse,
   completed,
+  hasStudentId,
 }) => {
   const [prereqsCompleted, setPrereqsCompleted] = useState(false);
   const [courseCompleted, setCourseCompleted] = useState(false);
@@ -77,7 +79,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           ))}
         </ul>
 
-        {prereqsCompleted && !courseCompleted && (
+        {prereqsCompleted && hasStudentId && !courseCompleted && (
           <button
             className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => openCourse(course.id)}
