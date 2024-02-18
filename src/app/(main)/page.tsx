@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useCredentials } from "@context/credentials";
 import Link from "next/link";
 import Modal from "@components/Modal";

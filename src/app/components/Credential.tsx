@@ -19,16 +19,18 @@ const Credential: React.FC<CredentialProps> = ({
   const credentialContext = useCredentials();
 
   const retrieveCredential = async () => {
-    const response = await fetch(`/api/retrieve?id=${credentialId}`, {
-      method: "GET",
-    });
-    const data = await response.json();
-    console.log(data);
+    // const response = await fetch(`/api/retrieve?id=${credentialId}`, {
+    //   method: "GET",
+    // });
+    // const data = await response.json();
+    // console.log(data);
 
-    // verify it
-    const verified = await credentialContext?.verify(data);
+    const credential = await credentialContext?.retrieve(credentialId);
 
-    console.log("verified result", verified);
+    const decrypted = await credentialContext?.decrypt(credential);
+
+    //const verified = await credentialContext?.verify(decrypted);
+    //console.log("verified result", verified);
   };
 
   return (

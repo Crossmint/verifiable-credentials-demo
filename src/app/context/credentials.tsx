@@ -49,9 +49,6 @@ type CredentialContextType = {
 
 const CredentialContext = createContext<CredentialContextType | null>(null);
 
-const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
-CrossmintAPI.init(clientKey, ["https://ipfs.io/ipfs/{cid}"]);
-
 export function CredentialProvider({
   children,
 }: {
@@ -66,6 +63,11 @@ export function CredentialProvider({
 
   useEffect(() => {
     if (wallet?.address) {
+      const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
+      const serverKey = process.env.CROSSMINT_API_KEY || "";
+      CrossmintAPI.init(clientKey, ["https://ipfs.io/ipfs/{cid}"]);
+      const lit = new Lit();
+
       getCollections(wallet?.address);
     }
   }, [wallet?.address]);
@@ -123,17 +125,28 @@ export function CredentialProvider({
 
   const retrieve = async (id: string) => {
     console.log("id: ", id);
-    getCredentialFromId(id, environment).then((data: any) => {});
+    const cred = await getCredentialFromId(id, environment);
 
-    const logCred = (cred: any) => {
-      console.log("cred: ", cred);
-    };
+    console.log("cred: ", cred);
   };
 
-  const decrypt = () => {};
+  const decrypt = async (credential: any) => {
+    const lit = new Lit();
+    const output = await lit.decrypt(credential?.payload);
+    console.log("output: ", output);
 
-  const verify = (credential: VerifiableCredential) => {
+    return output;
+  };
+
+  const verify = async (credential: VerifiableCredential) => {
     console.log("credentials.tsx verify called", credential);
+
+    const lit = new Lit();
+
+    //const output = await lit.decrypt(credential?.encryptedCredential?.payload);
+
+    //console.log("output: ", output);
+
     return verifyCredential(credential);
   };
 
