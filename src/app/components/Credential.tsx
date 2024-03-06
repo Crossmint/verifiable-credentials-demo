@@ -40,10 +40,10 @@ const Credential: React.FC<CredentialProps> = ({
 
   return (
     <div className="flex rounded overflow-hidden shadow-lg bg-white">
-      <img className="max-w-64" src={imageUrl} alt="credential image" />
+      <img src={imageUrl} alt="credential image" width="256" height="256" />
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2">{title}</div>
-        <p className="text-gray-700 text-base">{description}</p>
+        <p className="text-gray-700 text-sm">{description}</p>
 
         {isValid ? (
           <div className="flex items-center max-w-32 bg-green-200 text-green-700 mt-4 py-2 px-4 rounded">
