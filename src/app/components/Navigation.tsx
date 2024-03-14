@@ -10,6 +10,7 @@ const orbitron = Orbitron({ subsets: ["latin"] });
 const Navigation = () => {
   const pathname = usePathname();
   const isThirdParty = pathname === "/dogemoto";
+  const hideLinkClass = isThirdParty ? "hidden" : "";
 
   return (
     <nav
@@ -35,10 +36,10 @@ const Navigation = () => {
           <Link className="px-4 py-2" href="/">
             Home
           </Link>
-          <Link className="px-4 py-2" href="/courses">
+          <Link className={`px-4 py-2 ${hideLinkClass}`} href="/courses">
             Courses
           </Link>
-          <Link className="px-4 py-2" href="/profile">
+          <Link className={`px-4 py-2 ${hideLinkClass}`} href="/profile">
             Profile
           </Link>
           <DynamicWidget />
