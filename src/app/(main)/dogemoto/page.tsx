@@ -43,7 +43,7 @@ const Content = () => {
           "polygon",
           wallet,
           {
-            issuers: ["did:polygon:0xa22CaDEdE67c11dc1444E507fDdd9b831a67aBd1"],
+            issuers: ["did:polygon:0xd9d8BA9D5956f78E02F4506940f42ac2dAB9DABd"],
             types: ["CourseSchema"],
           },
           environment
@@ -51,7 +51,7 @@ const Content = () => {
       : [];
 
     const validContracts = [
-      "0x6cacd4EC40967FfC7430c2cD552bcF8B2c61391f", // Shibetoshi University courses
+      "0x4a0479F1961b7AD8C60E5E1B36e44a0B7D2ba7fe", // Shibetoshi University courses
     ];
 
     const filtered = collections?.filter((obj: any) =>

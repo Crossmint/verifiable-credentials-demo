@@ -74,7 +74,7 @@ export function CredentialProvider({
           "polygon",
           wallet,
           {
-            issuers: ["did:polygon:0xa22CaDEdE67c11dc1444E507fDdd9b831a67aBd1"],
+            issuers: ["did:polygon:0xd9d8BA9D5956f78E02F4506940f42ac2dAB9DABd"],
             types: ["StudentId", "CourseSchema"],
           },
           environment
@@ -82,8 +82,8 @@ export function CredentialProvider({
       : [];
 
     const validContracts = [
-      "0xd9eeC3D7BE67F02Ca103c0C27fc45f4AA6612360", // student id
-      "0x6cacd4EC40967FfC7430c2cD552bcF8B2c61391f", // courses
+      "0xD51aa30BaC1d45dB3A6031657d1b2277D1900238", // student id
+      "0x4a0479F1961b7AD8C60E5E1B36e44a0B7D2ba7fe", // courses
       //"0x010beF737dA4f831EaBAf0B6460e5b3Df32Ec9F5", // certificate
     ];
 
@@ -91,13 +91,14 @@ export function CredentialProvider({
       validContracts.includes(obj.contractAddress)
     );
 
+
     console.log("filtered:", filtered);
     setCollections(filtered || []);
 
     const studentIdExists = collections?.some(
       (collection: any) =>
         collection.contractAddress ===
-        "0xd9eeC3D7BE67F02Ca103c0C27fc45f4AA6612360"
+        "0xD51aa30BaC1d45dB3A6031657d1b2277D1900238"
     );
     setHasStudentId(studentIdExists || false);
 

@@ -27,8 +27,8 @@ const Credential: React.FC<CredentialProps> = ({
 
     try {
       const credential = await credentialContext?.retrieve(credentialId);
-      const decrypted = await credentialContext?.decrypt(credential);
-      const verified = await credentialContext?.verify(decrypted);
+      //const decrypted = await credentialContext?.decrypt(credential);
+      const verified = await credentialContext?.verify(credential);
 
       setIsValid(verified.validVC);
     } catch (e) {
