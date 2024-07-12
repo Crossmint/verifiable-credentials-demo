@@ -59,7 +59,7 @@ const Page = () => {
         type: "course",
         courseId: currentCourse?.id,
         finalGrade,
-        recipient: `polygon:${wallet?.address}`,
+        recipient: `polygon-amoy:${wallet?.address}`,
       };
 
       const courseCred = await issueCredential(data);

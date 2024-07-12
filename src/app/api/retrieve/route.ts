@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const validContracts = [
-    "0xC54424bd19462ad3358404c24523C9752f9D8B34",
+    "0xd32E7a29A0650fdE3218cA9dF37306ad66ebbf3c",
     "0x685E6aE7925210F69889747d49D6bCC10A49c032",
     "0xEB5c3E84831ED7f158307ebC2AfBc064EfF778b4",
   ];
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (data.wallet) {
       // retrieve NFTs in connected wallet
       const nftResults = await callCrossmintAPI(
-        `/2022-06-09/wallets/polygon:${data.wallet}/nfts?page=1&perPage=50`,
+        `/2022-06-09/wallets/polygon-amoy:${data.wallet}/nfts?page=1&perPage=50`,
         {
           method: "GET",
         }

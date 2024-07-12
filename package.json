@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@crossmint/client-sdk-verifiable-credentials": "2.1.0",
+    "@crossmint/client-sdk-verifiable-credentials": "2.1.6",
     "@dynamic-labs/ethereum": "^1.0.9",
     "@dynamic-labs/sdk-react-core": "^1.0.9",
     "next": "14.1.3",

@@ -33,7 +33,7 @@ const Content = () => {
         firstName: formData.get("firstName"),
         lastName: formData.get("lastName"),
         secret: formData.get("secret"),
-        recipient: `polygon:${walletAddress}`,
+        recipient: `polygon-amoy:${walletAddress}`,
       };
 
       const studentIdCred = await issueCredential(data);

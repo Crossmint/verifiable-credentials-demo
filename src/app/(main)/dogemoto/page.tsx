@@ -40,10 +40,12 @@ const Content = () => {
   const getCollections = async (wallet: string) => {
     const collections: any = wallet
       ? await getCredentialCollections(
-          "polygon",
+          "polygon-amoy",
           wallet,
           {
-            issuers: ["did:polygon:0xd9d8BA9D5956f78E02F4506940f42ac2dAB9DABd"],
+            issuers: [
+              "did:polygon-amoy:0xd9d8BA9D5956f78E02F4506940f42ac2dAB9DABd",
+            ],
             types: ["CourseSchema"],
           },
           environment
