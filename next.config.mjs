@@ -10,6 +10,7 @@ const nextConfig = {
       },
     ],
   },
+  appDir: true,
 };
 
 export default nextConfig;

@@ -42,23 +42,23 @@ const Content = () => {
       ? await getCredentialCollections(
           "polygon-amoy",
           wallet,
-          {
-            issuers: [
-              "did:polygon-amoy:0xd9d8BA9D5956f78E02F4506940f42ac2dAB9DABd",
-            ],
-            types: ["CourseSchema"],
-          },
+          undefined,
           environment
         )
       : [];
 
-    const validContracts = [
-      "0x4a0479F1961b7AD8C60E5E1B36e44a0B7D2ba7fe", // Shibetoshi University courses
-    ];
+    // remove filtering for simplicity for now
+    // it would makes sense for the third part to maintain a list of contracts they will accept as valid credentials
+    // and only list those credentials. Doing so will also pre-filter out the irrelevant Shibetoshi student ID
+    // const validContracts = [
+    //   "0x4a0479F1961b7AD8C60E5E1B36e44a0B7D2ba7fe", // Shibetoshi University courses
+    // ];
 
-    const filtered = collections?.filter((obj: any) =>
-      validContracts.includes(obj.contractAddress)
-    );
+    // const filtered = collections?.filter((obj: any) =>
+    //   validContracts.includes(obj.contractAddress)
+    // );
+
+    const filtered = collections;
 
     console.log("filtered:", filtered);
     setCollections(filtered || []);

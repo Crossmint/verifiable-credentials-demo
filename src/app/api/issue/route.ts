@@ -35,7 +35,7 @@ const handleCourse = async (data: {
   console.log("sending api reqeust...");
 
   const apiResponse = await callCrossmintAPI(
-    `unstable/collections/${collectionId}/credentials`,
+    `unstable/credentials/templates/${collectionId}/vcs`,
     {
       method: "POST",
       body,

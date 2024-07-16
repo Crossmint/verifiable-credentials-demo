@@ -5,6 +5,7 @@ import { useCredentials } from "@context/credentials";
 import { FaCheckCircle } from "react-icons/fa";
 
 interface CredentialProps {
+  key: string;
   credentialId: string;
   imageUrl: string;
   title: string;
@@ -13,6 +14,7 @@ interface CredentialProps {
 }
 
 const Credential: React.FC<CredentialProps> = ({
+  key,
   credentialId,
   imageUrl,
   title,
@@ -39,7 +41,7 @@ const Credential: React.FC<CredentialProps> = ({
   };
 
   return (
-    <div className="flex rounded overflow-hidden shadow-lg bg-white">
+    <div key={key} className="flex rounded overflow-hidden shadow-lg bg-white">
       <img src={imageUrl} alt="credential image" width="256" height="256" />
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2">{title}</div>

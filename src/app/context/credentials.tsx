@@ -65,44 +65,50 @@ export function CredentialProvider({
     const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
     CrossmintAPI.init(clientKey, ["https://ipfs.io/ipfs/{cid}"]);
 
-    getCollections(wallet?.address || "");
+    if (!collections || collections.length === 0) {
+      getCollections(wallet?.address || "");
+    }
   }, [wallet]);
 
   const getCollections = async (wallet: string) => {
     const collections: any = wallet
       ? await getCredentialCollections(
-          "polygon",
+          "polygon-amoy",
           wallet,
-          {
-            issuers: [
-              "did:polygon-amoy:0xa22CaDEdE67c11dc1444E507fDdd9b831a67aBd1",
-            ],
-            types: [
-              "crossmint:b2166c3f-5b93-4064-9d3c-9bb6be9b4f94:StudentId",
-              "Course",
-            ],
-          },
+          // removing filtering to keep it simple
+          // {
+          //   // issuers: [
+          //   //   "did:polygon-amoy:0xa22CaDEdE67c11dc1444E507fDdd9b831a67aBd1",
+          //   // ],
+          //   // types: [
+          //   //   "crossmint:b2166c3f-5b93-4064-9d3c-9bb6be9b4f94:StudentId",
+          //   //   "Course",
+          //   // ],
+          // },
+          undefined,
           environment
         )
       : [];
 
-    const validContracts = [
-      "0xd32E7a29A0650fdE3218cA9dF37306ad66ebbf3c", // student id
-      "0x4a0479F1961b7AD8C60E5E1B36e44a0B7D2ba7fe", // courses
-      //"0x010beF737dA4f831EaBAf0B6460e5b3Df32Ec9F5", // certificate
-    ];
+    // removing filtering for now to keep it simple
+    // const validContracts = [
+    //   "0xd32E7a29A0650fdE3218cA9dF37306ad66ebbf3c", // student id
+    //   "0xe9AfD2F4266563c02C92f2875fFbd894dEd367E1", // courses
+    // ];
 
-    const filtered = collections?.filter((obj: any) =>
-      validContracts.includes(obj.contractAddress)
-    );
+    // const filtered = collections?.filter((obj: any) =>
+    //   validContracts.includes(obj.contractAddress)
+    // );
 
-    console.log("filtered:", filtered);
+    // console.log("filtered:", filtered);
+
+    const filtered = collections;
     setCollections(filtered || []);
 
     const studentIdExists = collections?.some(
       (collection: any) =>
         collection.contractAddress ===
-        "0xd32E7a29A0650fdE3218cA9dF37306ad66ebbf3c"
+        process.env.NEXT_PUBLIC_STUDENT_ID_CONTRACT
     );
     setHasStudentId(studentIdExists || false);
 
