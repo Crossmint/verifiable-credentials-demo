@@ -28,23 +28,24 @@ yarn install
 
 3. Create a Crossmint Developer Account at https://staging.crossmint.com.
 
-4. Create a server-side API key with the following scopes: `collections.create`, `credentials.create`, `credentials.read`, `credentials.delete`. Check docs for more info on [Crossmint API Keys](https://docs.crossmint.com/introduction/platform/api-keys).
+4. Create a server-side API key with the following scopes: `collections.create`, `credentials:templates.create`, `credentials.read`, `credentials.delete`, `nfts.create`. Check docs for more info on [Crossmint API Keys](https://docs.crossmint.com/introduction/platform/api-keys).
 
 5. Create a client-side API key with the following scopes: `wallets:nfts.read` and `wallets.read`. (To fully demonstrate and test third party verification you'll need to create a new project in the crossmint developer console and a new client-side key under that project. You can use the same client-side key initially.)
 
-6. Setup local environment file by copying the `sample.env` file in this repository to `.env.local`. You'll need to fill in your own values. You can get your dynamic environment ID at [dynamic.xyz](https://dynamic.xyz/)
+6. Copy the content in the `sample.env` file to a newly created local environment file named `.env.local`. You'll need to fill in your own values. You can get your dynamic environment ID at [dynamic.xyz](https://dynamic.xyz/)
 
 7. Create `Types` and `Templates` via API
 
    - check the `/scripts` directory in this repository to get started
    - you'll need to run each script in a specific order
-     1. `node create-student-id-type.js`
-     2. `node create-student-id-template.js` (note the returned collectionId)
-     3. `node create-course-type.js`
-     4. `node create-course-template.js` (note the returned collectionId)
-   - save returned collection IDs to the `.env.local`
+     1. `node create-student-id-type.js` (note the returned id, i.e. `crossmint:<projectId>":<typeName>` to reference it when running the next file)
+     2. `node create-student-id-template.js` (note the returned collectionId and add it to the `.env.local` file)
+     3. `node create-course-type.js` (note the returned id, i.e. `crossmint:<projectId>":<typeName>` to reference it when running the next file)
+     4. `node create-course-template.js` (note the returned collectionId and add it to the `.env.local` file)
 
-8. Get the Student ID Template contract address from within the developer console. After you've created the student ID template via the script above you will be able to find it within the collection tab inside the console. Navigate to the "Smart Contract" tab to get the deployed contract address and then save this value to the `NEXT_PUBLIC_STUDENT_ID_CONTRACT` entry in the environment file. This is used to run a helper function that checks if the logged in user has a student ID.
+8. Go to the developer console and access the Student ID Template Contract Address. 
+    - Since you have already created the student ID template via the script above, you will be able to find it under the Collections tab. Select the template, navigate to the "Smart Contract" tab to get the deployed contract address. 
+    - Save this value to the `NEXT_PUBLIC_STUDENT_ID_CONTRACT` entry in the environment file. This is used to run a helper function that checks if the logged in user has a student ID.
 
 9. Start the development server
 

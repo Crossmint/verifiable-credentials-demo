@@ -1,8 +1,10 @@
-const myApiKey = "sk_YOUR_SERVER_API_KEY";
+require('dotenv').config({path:'../.env.local'});
+const myApiKey = process.env.CROSSMINT_API_KEY;
 
 const templateParams = {
   credentials: {
-    type: "crossmint:b2166c3f-5b93-4064-9d3c-9bb6be9b4f94:StudentId",
+    // reference the id returned from the previous step, string should look like crossmint:<projectId>:<typeName>
+    type: "<TYPE_ID>",
     encryption: "none",
     storage: "crossmint",
   },
@@ -25,7 +27,7 @@ const options = {
 };
 
 fetch(
-  "https://staging.crossmint.com/api/unstable/credentials/templates/",
+  "https://staging.crossmint.com/api/v1-alpha1/credentials/templates/",
   options
 )
   .then((response) => response.json())
