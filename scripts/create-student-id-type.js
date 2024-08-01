@@ -1,4 +1,6 @@
-const myApiKey = "sk_YOUR_SERVER_API_KEY";
+require('dotenv').config({path:'../.env.local'});
+const myApiKey = process.env.CROSSMINT_API_KEY;
+
 const typeName = "StudentId";
 
 const schema = {
@@ -31,7 +33,7 @@ const options = {
 };
 
 fetch(
-  `https://staging.crossmint.com/api/unstable/credentials/types/${typeName}`,
+  `https://staging.crossmint.com/api/v1-alpha1/credentials/types/${typeName}`,
   options
 )
   .then((response) => response.json())
