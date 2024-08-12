@@ -13,7 +13,7 @@ const handleStudentId = async (data: any) => {
   const collectionId = process.env.NEXT_PUBLIC_STUDENT_ID_COLLECTION;
 
   const apiResponse = await callCrossmintAPI(
-    `unstable/collections/${collectionId}/vcs`,
+    `v1-alpha1/collections/${collectionId}/vcs`,
     {
       method: "POST",
       body,
@@ -35,7 +35,7 @@ const handleCourse = async (data: {
   console.log("sending api reqeust...");
 
   const apiResponse = await callCrossmintAPI(
-    `unstable/credentials/templates/${collectionId}/vcs`,
+    `v1-alpha1/credentials/templates/${collectionId}/vcs`,
     {
       method: "POST",
       body,

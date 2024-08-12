@@ -18,7 +18,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       };
 
       const apiResponse = await callCrossmintAPI(
-        "unstable/credentials/verify;",
+        "v1-alpha1/credentials/verify;",
         {
           method: "POST",
           body,

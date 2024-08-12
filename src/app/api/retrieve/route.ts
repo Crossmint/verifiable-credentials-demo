@@ -10,7 +10,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
   const id = req.nextUrl.searchParams.get("id") || "";
 
   if (id) {
-    const credential = await callCrossmintAPI(`/unstable/credentials/${id}`, {
+    const credential = await callCrossmintAPI(`/v1-alpha1/credentials/${id}`, {
       method: "GET",
     });
 
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       // fetch credentials
       const promises = filteredArray.map(async (item: any) => {
         const response = await callCrossmintAPI(
-          `/unstable/credentials/${item.metadata.credentialId}`,
+          `/v1-alpha1/credentials/${item.metadata.credentialId}`,
           { method: "GET" }
         );
         item.credential = response;
