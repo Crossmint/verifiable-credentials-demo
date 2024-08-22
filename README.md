@@ -28,7 +28,14 @@ yarn install
 
 3. Create a Crossmint Developer Account at https://staging.crossmint.com.
 
-4. Create a server-side API key with the following scopes: `collections.create`, `credentials:templates.create`, `credentials.read`, `credentials.delete`, `nfts.create`. Check docs for more info on [Crossmint API Keys](https://docs.crossmint.com/introduction/platform/api-keys).
+4. Create a server-side API key with the following scopes: 
+   - `nfts.create`
+   - `collections.create` 
+   - `credentials.create`
+   - `credentials:templates.create`
+   - `credentials.read` 
+   - `credentials.delete` 
+   Check docs for more info on [Crossmint API Keys](https://docs.crossmint.com/introduction/platform/api-keys).
 
 5. Create a client-side API key with the following scopes: `wallets:nfts.read` and `wallets.read`. (To fully demonstrate and test third party verification you'll need to create a new project in the crossmint developer console and a new client-side key under that project. You can use the same client-side key initially.)
 
