@@ -23,7 +23,7 @@ git clone https://github.com/Crossmint/verifiable-credentials-demo.git
 2. Install dependencies
 
 ```shell
-yarn install
+pnpm install
 ```
 
 3. Create a Crossmint Developer Account at https://staging.crossmint.com.
@@ -58,7 +58,7 @@ yarn install
 9. Start the development server
 
 ```shell
-yarn run dev
+pnpm run dev
 ```
 
 Now, open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
