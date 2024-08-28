@@ -34,8 +34,9 @@ const Page = () => {
         {collections?.map((collection) =>
           collection.nfts.map((nft) => (
             <Credential
-              key={nft.metadata.credentialId}
-              credentialId={nft.metadata.credentialId}
+            key={`${nft.contractAddress}:${nft.tokenId}`}
+            collection={collection}
+              nft={nft}
               imageUrl={nft.metadata.image}
               title={nft.metadata.name}
               description={nft.metadata.description}

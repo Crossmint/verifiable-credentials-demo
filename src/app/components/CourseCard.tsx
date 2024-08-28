@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Collection } from "@context/credentials";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaHourglassHalf } from "react-icons/fa";
 import { Fira_Code } from "next/font/google";
+import { Collection } from "@crossmint/client-sdk-verifiable-credentials";
 
 const fira = Fira_Code({ subsets: ["latin"] });
 
@@ -20,6 +20,7 @@ interface CourseCardProps {
   openCourse: Function;
   completed: string[];
   hasStudentId: boolean;
+  pending: boolean;
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({
@@ -28,6 +29,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   openCourse,
   completed,
   hasStudentId,
+  pending
 }) => {
   const [prereqsCompleted, setPrereqsCompleted] = useState(false);
   const [courseCompleted, setCourseCompleted] = useState(false);
@@ -79,13 +81,20 @@ const CourseCard: React.FC<CourseCardProps> = ({
           ))}
         </ul>
 
-        {prereqsCompleted && hasStudentId && !courseCompleted && (
+        {prereqsCompleted && hasStudentId && !courseCompleted && !pending && (
           <button
             className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => openCourse(course.id)}
           >
             Take Course
           </button>
+        )}
+
+        {!courseCompleted && pending && (
+          <div className="flex items-center max-w-32 bg-blue-200 text-blue-700 mt-4 py-2 px-4 rounded">
+          <FaHourglassHalf className="mr-1" />
+          <span>Pending</span>
+          </div>
         )}
 
         {courseCompleted && (

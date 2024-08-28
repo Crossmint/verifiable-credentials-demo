@@ -5,32 +5,13 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import {
   verifyCredential,
   VerifiableCredential,
-  getCredentialFromId,
-  getCredentialCollections,
-  CrossmintAPI,
+  CredentialService,
+  getCredentialNfts,
+  crossmintAPI,
   Lit,
+  Collection,
+  VCNFT as Nft,
 } from "@crossmint/client-sdk-verifiable-credentials";
-
-type NFT = {
-  chain: string;
-  contractAddress: string;
-  locator: string;
-  metadata: {
-    name: string;
-    description: string;
-    credentialId: string;
-    image: string;
-    attributes?: any;
-  };
-  tokenId: string;
-  tokenStandard: string;
-};
-
-export type Collection = {
-  contractAddress: string;
-  metadata?: any;
-  nfts: NFT[];
-};
 
 type Wallet = {
   address: string;
@@ -43,8 +24,12 @@ type CredentialContextType = {
   verify: Function;
   wallet: Wallet;
   refreshCredentials: Function;
-  hasStudentId: boolean;
+  hasStudentId: "true" | "false" | "pending";
+  setPendingStudentId: () => void;
+  studentId: Collection | null;
   completedCourses: string[];
+  pendingCourses: String[];
+  addPendingCourse: (courseId: string) => void;
 };
 
 const CredentialContext = createContext<CredentialContextType | null>(null);
@@ -55,16 +40,27 @@ export function CredentialProvider({
   children: React.ReactNode;
 }) {
   const [collections, setCollections] = useState<Collection[] | null>(null);
-  const [hasStudentId, setHasStudentId] = useState(false);
+  const [hasStudentId, setHasStudentId] = useState<"false"|"true"|"pending" >("false");
+  const [studentIdCollection, setStudentIdCollection] = useState<Collection | null>(null);
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
+  const [pendingCourses, setPendingCourses] = useState<string[]>([]);
+  const setPendingStudentId = () => {
+    setHasStudentId("pending");
+  };
 
-  const { primaryWallet: wallet } = useDynamicContext();
+  const { primaryWallet: wallet, handleUnlinkWallet  } = useDynamicContext();
   const environment = process.env.NEXT_PUBLIC_CROSSMINT_ENV || "";
 
   useEffect(() => {
     const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
-    CrossmintAPI.init(clientKey, ["https://ipfs.io/ipfs/{cid}"]);
+    crossmintAPI.init(clientKey,{ environment:"staging"});
 
+    if (!wallet) {
+      setCollections([]);
+      setHasStudentId("false");
+      setCompletedCourses([]);
+      return;
+    }
     if (!collections || collections.length === 0) {
       getCollections(wallet?.address || "");
     }
@@ -72,7 +68,7 @@ export function CredentialProvider({
 
   const getCollections = async (wallet: string) => {
     const collections: any = wallet
-      ? await getCredentialCollections(
+      ? await getCredentialNfts(
           "polygon-amoy",
           wallet,
           // removing filtering to keep it simple
@@ -85,8 +81,6 @@ export function CredentialProvider({
           //   //   "Course",
           //   // ],
           // },
-          undefined,
-          environment
         )
       : [];
 
@@ -100,21 +94,25 @@ export function CredentialProvider({
     //   validContracts.includes(obj.contractAddress)
     // );
 
-    // console.log("filtered:", filtered);
 
     const filtered = collections;
+    console.log("filtered:", filtered);
     setCollections(filtered || []);
 
-    const studentIdExists = collections?.some(
+    const studentIdCollection = collections?.find(
       (collection: any) =>
         collection.contractAddress ===
         process.env.NEXT_PUBLIC_STUDENT_ID_CONTRACT
     );
-    setHasStudentId(studentIdExists || false);
+    setStudentIdCollection(studentIdCollection);
+    const studentIdExists = studentIdCollection ? true : false;
+
+    const studentIdStatus = studentIdExists ? "true" : (hasStudentId === "pending" ? "pending" : "false");
+    setHasStudentId(studentIdStatus);
 
     const completed: any[] = (filtered || []).flatMap(
       (collection: Collection) =>
-        collection.nfts.flatMap((nft: NFT) => {
+        collection.nfts.flatMap((nft: Nft) => {
           const courseAttributes = nft.metadata.attributes.filter(
             (attribute: any) =>
               attribute.trait_type === "credentialType" &&
@@ -133,26 +131,26 @@ export function CredentialProvider({
     setCompletedCourses(completed);
   };
 
-  const retrieve = async (id: string) => {
-    console.debug("retrieving credential with id: ", id);
-    const credential = await getCredentialFromId(id, environment);
+  const retrieve = async (collection:Collection, tokenId:string) => {
+    console.debug(`retrieving credential for collection ${collection.contractAddress} and tokenId ${tokenId}`);
+    const credential = await new CredentialService().getCredential(collection, tokenId);
     console.debug("retrieve credential result: ", credential);
 
     return credential;
   };
 
   const decrypt = async (credential: any) => {
-    const lit = new Lit();
+    const lit = new Lit("manzano");
     console.debug("about to decrypt payload: ", credential.payload);
-    const decrypted = await lit.decrypt(credential?.payload);
+    const decrypted = await lit.decrypt(credential);
     console.debug("decrypt credential result: ", decrypted);
 
-    return JSON.parse(decrypted); // this JSON.parse should be removed on next SDK update
+    return decrypted;
   };
 
   const verify = async (credential: VerifiableCredential) => {
     console.debug("about to verify credential: ", credential);
-    const verified = await verifyCredential(credential, environment);
+    const verified = await verifyCredential(credential);
     console.debug("verify credential result:", verified);
 
     return verified;
@@ -168,7 +166,13 @@ export function CredentialProvider({
         wallet: wallet || { address: "" },
         refreshCredentials: () => getCollections(wallet?.address || ""),
         hasStudentId: hasStudentId,
+        setPendingStudentId: setPendingStudentId,
+        studentId:studentIdCollection,
         completedCourses: completedCourses,
+        pendingCourses: pendingCourses,
+        addPendingCourse: (courseId: string) => {
+          setPendingCourses([...pendingCourses, courseId]);
+        },
       }}
     >
       {children}

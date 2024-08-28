@@ -3,10 +3,12 @@
 import React, { useState } from "react";
 import { useCredentials } from "@context/credentials";
 import { FaCheckCircle } from "react-icons/fa";
+import { Collection, VCNFT } from "@crossmint/client-sdk-verifiable-credentials";
 
 interface CredentialProps {
   key: string;
-  credentialId: string;
+  collection:Collection,
+  nft:VCNFT,
   imageUrl: string;
   title: string;
   description: string;
@@ -15,7 +17,8 @@ interface CredentialProps {
 
 const Credential: React.FC<CredentialProps> = ({
   key,
-  credentialId,
+  collection,
+  nft,
   imageUrl,
   title,
   description,
@@ -28,7 +31,7 @@ const Credential: React.FC<CredentialProps> = ({
     setIsProcessing(true);
 
     try {
-      const credential = await credentialContext?.retrieve(credentialId);
+      const credential = await credentialContext?.retrieve(collection, nft.tokenId);
       //const decrypted = await credentialContext?.decrypt(credential);
       const verified = await credentialContext?.verify(credential);
 
