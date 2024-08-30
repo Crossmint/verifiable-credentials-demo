@@ -59,6 +59,7 @@ export function CredentialProvider({
       setCollections([]);
       setHasStudentId("false");
       setCompletedCourses([]);
+      setPendingCourses([]);
       return;
     }
     if (!collections || collections.length === 0) {

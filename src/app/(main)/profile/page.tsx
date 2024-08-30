@@ -21,7 +21,7 @@ const Page = () => {
   return (
     <>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl py-3">Your Credentials</h1>
+        <h1 className="text-2xl py-3">Your Credential NFTs</h1>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={refreshCredentials}
