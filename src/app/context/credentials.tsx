@@ -11,6 +11,7 @@ import {
   Lit,
   Collection,
   VCNFT as Nft,
+  CrossmintMetamaskDecrypt
 } from "@crossmint/client-sdk-verifiable-credentials";
 
 type Wallet = {
@@ -141,9 +142,11 @@ export function CredentialProvider({
   };
 
   const decrypt = async (credential: any) => {
-    const lit = new Lit("manzano");
+    // const lit = new Lit("manzano");
     console.debug("about to decrypt payload: ", credential.payload);
-    const decrypted = await lit.decrypt(credential);
+    // const decrypted = await lit.decrypt(credential);
+    const decrypted = await new CrossmintMetamaskDecrypt().decrypt(credential);
+
     console.debug("decrypt credential result: ", decrypted);
 
     return decrypted;

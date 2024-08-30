@@ -73,7 +73,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const apiResponse = await handler(data);
     return NextResponse.json(apiResponse, { status: 200 });
   } catch (error) {
-    console.log("failed to issue vc");
+    console.log("failed to issue vc", error);
     return NextResponse.json(
       { message: "Error issuing credential" },
       { status: 500 }
