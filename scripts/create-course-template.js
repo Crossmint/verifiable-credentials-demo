@@ -5,7 +5,7 @@ const templateParams = {
   credentials: {
     // reference the id returned from the previous step, string should look like crossmint:<projectId>:<typeName>
     type: "TYPE_ID",
-    encryption: "none",
+    encryption: "crossmint-recoverable", // set to "none" to remove encryption
     storage: "crossmint",
   },
   metadata: {
