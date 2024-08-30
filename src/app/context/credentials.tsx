@@ -133,6 +133,16 @@ export function CredentialProvider({
     setCompletedCourses(completed);
   };
 
+  const isStudentIdCollection = (collection: Collection) => {
+    const types= collection.metadata?.credentialMetadata?.type
+    for (const type of types) {
+      if (type.includes("StudentId")) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   const retrieve = async (collection:Collection, tokenId:string) => {
     console.debug(`retrieving credential for collection ${collection.contractAddress} and tokenId ${tokenId}`);
     const credential = await new CredentialService().getCredential(collection, tokenId);
