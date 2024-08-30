@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useCredentials } from "@context/credentials";
 import { FaCheckCircle, FaTimes } from "react-icons/fa";
-import { Collection, VCNFT , VerifiableCredential} from "@crossmint/client-sdk-verifiable-credentials";
+import { Collection, VCNFT , VerifiableCredential, EncryptedVerifiableCredential} from "@crossmint/client-sdk-verifiable-credentials";
 
 interface CredentialProps {
   key: string;
@@ -25,8 +25,11 @@ const Credential: React.FC<CredentialProps> = ({
   setIsProcessing,
 }) => {
   const [isValid, setIsValid] = useState<boolean>();
+  const [failedDecrypt, setFailedDecrypt] = useState<boolean>(false);
   const [getCredential, setGetCredential] = useState<VerifiableCredential|undefined>(undefined);
+  const [getEncCredential, setGetEncCredential] = useState<EncryptedVerifiableCredential|undefined>(undefined);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const isEncrypted=collection.metadata.credentialMetadata.encryption.type!=="none";
   const credentialContext = useCredentials();
 
   const retrieveCredential = async () => {
@@ -34,14 +37,33 @@ const Credential: React.FC<CredentialProps> = ({
 
     try {
       const credential = await credentialContext?.retrieve(collection, nft.tokenId);
-      //const decrypted = await credentialContext?.decrypt(credential);
-      setGetCredential(credential);
+      if (isEncrypted) {
+        console.log("Encrypted Credential: ",credential);
+        setGetEncCredential(credential);
+      }else{
+        setGetCredential(credential);
+      }
     } catch (e) {
       setIsValid(false);
     }
 
     setIsProcessing(false);
   };
+
+  const decryptCredential = async () => {
+    setIsProcessing(true);
+
+    try {
+      const decrypted = await credentialContext?.decrypt(getEncCredential);
+      setGetCredential(decrypted);
+      setFailedDecrypt(false);
+    } catch (e) {
+      setFailedDecrypt(true);
+    }
+
+    setIsProcessing(false);
+  };
+
   const verifyCredential = async () => {
 
     try {
@@ -101,6 +123,11 @@ const Credential: React.FC<CredentialProps> = ({
                 height="256"
               />
 
+              {isEncrypted && !getCredential ? (
+                <p className="mb-4">
+                        This credential is encrypted. Please decrypt it to view the contents.
+                      </p>              ) : (
+
               <div className="flex flex-col justify-between bg-gray-100 p-6 rounded-lg shadow-inner w-full md:w-auto">
                 <div className="text-gray-700 text-sm leading-relaxed">
                   {isCourseNft() ? (
@@ -155,10 +182,27 @@ const Credential: React.FC<CredentialProps> = ({
                   )}
                 </div>
               </div>
+                )}
+
             </div>
-
-            
-
+        
+            {isEncrypted && !getCredential ? (<div>
+              {failedDecrypt && (
+                <div className="flex items-center max-w-32 mt-4 py-2 px-4 rounded bg-red-200 text-red-700">
+                  <FaTimes className="mr-1" />
+                  <span>Failed to decrypt</span>
+                </div>
+              ) }
+               
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+                  onClick={decryptCredential}
+                >
+                  Decrypt Credential
+                </button>
+              
+            </div>):
+            (<div>
             {isValid !== undefined ? (
               <div className={`flex items-center max-w-32 mt-4 py-2 px-4 rounded ${isValid ? 'bg-green-200 text-green-700' : 'bg-red-200 text-red-700'}`}>
                 <FaCheckCircle className="mr-1" />
@@ -172,6 +216,8 @@ const Credential: React.FC<CredentialProps> = ({
                 Verify Credential
               </button>
             )}
+            </div>
+          )}
           </div>
         </div>
       )}
