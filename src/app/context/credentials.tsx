@@ -103,8 +103,7 @@ export function CredentialProvider({
 
     const studentIdCollection = collections?.find(
       (collection: any) =>
-        collection.contractAddress ===
-        process.env.NEXT_PUBLIC_STUDENT_ID_CONTRACT
+        isStudentIdCollection(collection)
     );
     setStudentIdCollection(studentIdCollection);
     const studentIdExists = studentIdCollection ? true : false;
@@ -132,6 +131,16 @@ export function CredentialProvider({
 
     setCompletedCourses(completed);
   };
+
+  const isStudentIdCollection = (collection: Collection) => {
+    const types= collection.metadata?.credentialMetadata?.type
+    for (const type of types) {
+      if (type.includes("StudentId")) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   const retrieve = async (collection:Collection, tokenId:string) => {
     console.debug(`retrieving credential for collection ${collection.contractAddress} and tokenId ${tokenId}`);

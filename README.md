@@ -53,7 +53,7 @@ pnpm install
 
 8. Go to the developer console and access the Student ID Template Contract Address. 
     - Since you have already created the student ID template via the script above, you will be able to find it under the Collections tab. Select the template, navigate to the "Smart Contract" tab to get the deployed contract address. 
-    - Save this value to the `NEXT_PUBLIC_STUDENT_ID_CONTRACT` entry in the environment file. This is used to run a helper function that checks if the logged in user has a student ID.
+    - Save this value to the `NEXT_PUBLIC_STUDENT_ID_CONTRACT` entry in the environment file. This is used to run a helper function that checks if the logged in user has a student ID. (Not necessary if your student id type is named `Student ID`)
 
 9. Start the development server
 
