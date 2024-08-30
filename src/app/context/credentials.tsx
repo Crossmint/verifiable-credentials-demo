@@ -103,8 +103,7 @@ export function CredentialProvider({
 
     const studentIdCollection = collections?.find(
       (collection: any) =>
-        collection.contractAddress ===
-        process.env.NEXT_PUBLIC_STUDENT_ID_CONTRACT
+        isStudentIdCollection(collection)
     );
     setStudentIdCollection(studentIdCollection);
     const studentIdExists = studentIdCollection ? true : false;
