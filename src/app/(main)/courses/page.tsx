@@ -22,6 +22,7 @@ const Page = () => {
   const wallet = credentialContext?.wallet;
 
   let completed = credentialContext?.completedCourses;
+  let pending = credentialContext?.pendingCourses;
 
   const openCourse = (id: string) => {
     const course = courses.find((course) => course.id === id);
@@ -63,6 +64,7 @@ const Page = () => {
       };
 
       const courseCred = await issueCredential(data);
+      credentialContext?.addPendingCourse(currentCourse?.id!);
 
       if (courseCred.credentialId) {
         setIsModalOpen(false);
@@ -114,7 +116,8 @@ const Page = () => {
             collections={collections || []}
             openCourse={openCourse}
             completed={completed || []}
-            hasStudentId={credentialContext?.hasStudentId || false}
+            pending = {pending?.includes(course.id) || false}
+            hasStudentId={credentialContext?.hasStudentId=="true" || false}
           />
         ))}
       </div>

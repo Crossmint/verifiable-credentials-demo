@@ -9,6 +9,7 @@ import NewStudent from "@components/NewStudent";
 import StudentIdCard from "../components/StudentIdCard";
 import { FaBookDead, FaGithub } from "react-icons/fa";
 import { SiW3C } from "react-icons/si";
+import Credential from "@components/Credential";
 
 const Content = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +22,14 @@ const Content = () => {
   const openSignup = () => {
     setIsModalOpen(true);
   };
+
+  const refreshCredentials = async () => {
+    setIsProcessing(true);
+    await credentialContext?.refreshCredentials(walletAddress);
+    setIsProcessing(false);
+  };
+
+  
 
   const submitForm = async () => {
     if (formRef.current && walletAddress) {
@@ -41,6 +50,7 @@ const Content = () => {
       if (studentIdCred.credentialId) {
         setIsModalOpen(false);
         setIsProcessing(false);
+        credentialContext?.setPendingStudentId();
       }
       console.log("studentIdCred:", studentIdCred);
     }
@@ -71,7 +81,7 @@ const Content = () => {
 
         <div className="bg-gray-100 p-6 rounded-lg mb-8 relative flex">
           <div className="flex-1">
-            {credentialContext?.hasStudentId ? (
+            {credentialContext?.hasStudentId =="true" ? (
               <>
                 <h2 className="text-2xl font-bold mb-4">
                   Check out the courses
@@ -94,17 +104,46 @@ const Content = () => {
                   Shibetoshi University Student ID. This is a verifiable
                   credential that represents your identity in the university.
                 </p>
+                {credentialContext?.hasStudentId == "pending" ? (
+                 <div className="flex justify-between items-center mb-8">
+                 <p className="text-blue-500">
+                    Your student ID is being processed. 
+                    Please wait a moment.
+                  </p>
+                 <button
+                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                   onClick={refreshCredentials}
+                 >
+                   Refresh
+                 </button>
+               </div>
+                ):(
                 <button
                   className="mt-4 bg-blue-500 hover:bg-blue-700 text-white text--2xl font-bold py-4 px-6 rounded"
                   onClick={() => openSignup()}
                 >
                   Create Student ID
-                </button>
+                </button> 
+                )}
               </>
             )}
           </div>
           <div className="ml-6">
-            <StudentIdCard />
+            {credentialContext?.hasStudentId != "true"? 
+              <StudentIdCard />
+              : 
+              credentialContext?.studentId?.nfts.slice(0,1).map((nft) => (
+                <Credential
+                  key={`${nft.contractAddress}:${nft.tokenId}`}
+                  collection={credentialContext?.studentId!}
+                  nft={nft}
+                  imageUrl={nft.metadata.image}
+                  title={nft.metadata.name}
+                  description={nft.metadata.description}
+                  setIsProcessing={setIsProcessing}
+                /> 
+              ))
+              }
           </div>
         </div>
 

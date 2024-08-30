@@ -5,12 +5,13 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import {
   verifyCredential,
   VerifiableCredential,
-  getCredentialFromId,
-  getCredentialCollections,
-  CrossmintAPI,
+  CredentialService,
+  getCredentialNfts,
+  crossmintAPI,
   Lit,
+  Collection,
 } from "@crossmint/client-sdk-verifiable-credentials";
-import { Collection } from "@context/credentials";
+
 import Credential from "@components/Credential";
 import Overlay from "@components/Overlay";
 import { FaCheckCircle } from "react-icons/fa";
@@ -32,18 +33,28 @@ const Content = () => {
 
   useEffect(() => {
     const clientKey = process.env.NEXT_PUBLIC_DOGEMOTO_KEY || "";
-    CrossmintAPI.init(clientKey, ["https://ipfs.io/ipfs/{cid}"]);
+    crossmintAPI.init(clientKey,{ environment:"staging"});
+        
+    if (!wallet) {
+      setCollections([]);
+      return;
+    }
 
     getCollections(wallet?.address || "");
   }, [wallet]);
 
+
+  const refreshCredentials = async () => {
+    setIsProcessing(true);
+    await  getCollections(wallet?.address || "");
+    setIsProcessing(false);
+  };
   const getCollections = async (wallet: string) => {
     const collections: any = wallet
-      ? await getCredentialCollections(
+      ? await getCredentialNfts(
           "polygon-amoy",
           wallet,
           undefined,
-          environment
         )
       : [];
 
@@ -87,22 +98,29 @@ const Content = () => {
               <FaCheckCircle className="mr-4 " size={48} />
               <span>
                 This page uses a different client API key within a different
-                project than Shibetoshi University to retreive the credentials.
+                project than Shibetoshi University to retrieve the credentials.
               </span>
             </div>
           </div>
         </div>
 
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl py-3">Your Credentials</h1>
+        <h1 className="text-2xl py-3">Your Credential NFTs</h1>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={refreshCredentials}
+        >
+          Refresh
+        </button> 
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {collections?.map((collection) =>
             collection.nfts.map((nft) => (
               <Credential
-                key={nft.metadata.credentialId}
-                credentialId={nft.metadata.credentialId}
+                key={`${nft.contractAddress}:${nft.tokenId}`}
+                collection={collection}
+                nft={nft}
                 imageUrl={nft.metadata.image}
                 title={nft.metadata.name}
                 description={nft.metadata.description}
