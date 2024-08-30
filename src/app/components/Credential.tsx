@@ -89,35 +89,74 @@ const Credential: React.FC<CredentialProps> = ({
             >
               <FaTimes size={20} />
             </button>
-            <h2 className="text-2xl font-bold mb-4">{title}</h2>
-            <p className="text-gray-700 text-sm mb-4">{description}</p>
-            <div className="flex flex-col md:flex-row">
+            <h2 className="text-2xl font-bold mb-4 text-center md:text-left">{title}</h2>
+            <p className="text-gray-600 text-sm mb-6 text-center md:text-left">{description}</p>
 
-              <img src={imageUrl} alt="credential image" className="mb-4 md:mb-0 md:mr-4" width="256" height="256" />
+            <div className="flex flex-col md:flex-row items-center md:items-start">
+              <img
+                src={imageUrl}
+                alt="credential image"
+                className="rounded-lg shadow-lg mb-6 md:mb-0 md:mr-8"
+                width="256"
+                height="256"
+              />
 
-              <div className="flex flex-col justify-between">
-                
-                <div className="text-gray-700 text-sm">
+              <div className="flex flex-col justify-between bg-gray-100 p-6 rounded-lg shadow-inner w-full md:w-auto">
+                <div className="text-gray-700 text-sm leading-relaxed">
                   {isCourseNft() ? (
                     <div>
-                  <p><strong>Course Name:</strong> {getCredential?.credentialSubject.courseName}</p>
-                  <p><strong>Course Number:</strong> {getCredential?.credentialSubject.courseNumber}</p>
-                  <p><strong>Final Grade:</strong> {getCredential?.credentialSubject.finalGrade}</p>
-                  <p><strong>Completed:</strong> {(new Date(getCredential?.credentialSubject.issueDate)).toDateString()}</p>
-                  <p><strong>Expires At:</strong> {getCredential?.validUntil }</p>
-                  </div>)
-                  :
-                  (<div>
-                  <p><strong>First Name:</strong> {getCredential?.credentialSubject.firstName}</p>
-                  <p><strong>Last Name:</strong> {getCredential?.credentialSubject.lastName}</p>
-                  <p><strong>Student ID:</strong> {getCredential?.credentialSubject.studentId}</p>
-                  <p><strong>Expires At:</strong> {getCredential?.validUntil }</p>
-                  </div>
-                  )
-                }
+                      <p className="mb-4">
+                        <span className="font-bold">Course Name:</span><br />
+                        {getCredential?.credentialSubject.courseName}
+                      </p>
+
+                      <p className="mb-4">
+                        <span className="font-bold">Course Number:</span><br />
+                        {getCredential?.credentialSubject.courseNumber}
+                      </p>
+
+                      <p className="mb-4">
+                        <span className="font-bold">Final Grade:</span><br />
+                        {getCredential?.credentialSubject.finalGrade}
+                      </p>
+
+                      <p className="mb-4">
+                        <span className="font-bold">Completed:</span><br />
+                        {new Date(getCredential?.credentialSubject.issueDate).toDateString()}
+                      </p>
+
+                      <p className="mb-4">
+                        <span className="font-bold">Expires At:</span><br />
+                        {getCredential?.validUntil}
+                      </p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="mb-4">
+                        <span className="font-bold">First Name:</span><br />
+                        {getCredential?.credentialSubject.firstName}
+                      </p>
+
+                      <p className="mb-4">
+                        <span className="font-bold">Last Name:</span><br />
+                        {getCredential?.credentialSubject.lastName}
+                      </p>
+
+                      <p className="mb-4">
+                        <span className="font-bold">Student ID:</span><br />
+                        {getCredential?.credentialSubject.studentId}
+                      </p>
+
+                      <p className="mb-4">
+                        <span className="font-bold">Expires At:</span><br />
+                        {getCredential?.validUntil}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
+
             
 
             {isValid !== undefined ? (
