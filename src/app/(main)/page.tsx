@@ -8,7 +8,7 @@ import Overlay from "@components/Overlay";
 import NewStudent from "@components/NewStudent";
 import StudentIdCard from "../components/StudentIdCard";
 import { FaBookDead, FaGithub } from "react-icons/fa";
-import { SiW3C } from "react-icons/si";
+import { DiW3C } from "react-icons/di";
 import Credential from "@components/Credential";
 
 const Content = () => {
@@ -28,8 +28,6 @@ const Content = () => {
     await credentialContext?.refreshCredentials(walletAddress);
     setIsProcessing(false);
   };
-
-  
 
   const submitForm = async () => {
     if (formRef.current && walletAddress) {
@@ -81,7 +79,7 @@ const Content = () => {
 
         <div className="bg-gray-100 p-6 rounded-lg mb-8 relative flex">
           <div className="flex-1">
-            {credentialContext?.hasStudentId =="true" ? (
+            {credentialContext?.hasStudentId == "true" ? (
               <>
                 <h2 className="text-2xl font-bold mb-4">
                   Check out the courses
@@ -105,45 +103,46 @@ const Content = () => {
                   credential that represents your identity in the university.
                 </p>
                 {credentialContext?.hasStudentId == "pending" ? (
-                 <div className="flex justify-between items-center mb-8">
-                 <p className="text-blue-500">
-                    Your student ID is being processed. 
-                    Please wait a moment.
-                  </p>
-                 <button
-                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                   onClick={refreshCredentials}
-                 >
-                   Refresh
-                 </button>
-               </div>
-                ):(
-                <button
-                  className="mt-4 bg-blue-500 hover:bg-blue-700 text-white text--2xl font-bold py-4 px-6 rounded"
-                  onClick={() => openSignup()}
-                >
-                  Create Student ID
-                </button> 
+                  <div className="flex justify-between items-center mb-8">
+                    <p className="text-blue-500">
+                      Your student ID is being processed. Please wait a moment.
+                    </p>
+                    <button
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={refreshCredentials}
+                    >
+                      Refresh
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className="mt-4 bg-blue-500 hover:bg-blue-700 text-white text--2xl font-bold py-4 px-6 rounded"
+                    onClick={() => openSignup()}
+                  >
+                    Create Student ID
+                  </button>
                 )}
               </>
             )}
           </div>
           <div className="ml-6">
-            {credentialContext?.hasStudentId != "true"? 
+            {credentialContext?.hasStudentId != "true" ? (
               <StudentIdCard />
-              : 
-              credentialContext?.studentId?.nfts.slice(0,1).map((nft) => (
-                <Credential
-                  key={`${nft.contractAddress}:${nft.tokenId}`}
-                  collection={credentialContext?.studentId!}
-                  nft={nft}
-                  imageUrl={nft.metadata.image}
-                  title={nft.metadata.name}
-                  description={nft.metadata.description}
-                  setIsProcessing={setIsProcessing}
-                /> 
-              ))
-              }
+            ) : (
+              credentialContext?.studentId?.nfts
+                .slice(0, 1)
+                .map((nft) => (
+                  <Credential
+                    key={`${nft.contractAddress}:${nft.tokenId}`}
+                    collection={credentialContext?.studentId!}
+                    nft={nft}
+                    imageUrl={nft.metadata.image}
+                    title={nft.metadata.name}
+                    description={nft.metadata.description}
+                    setIsProcessing={setIsProcessing}
+                  />
+                ))
+            )}
           </div>
         </div>
 
@@ -180,7 +179,7 @@ const Content = () => {
           </div>
           <div className="bg-gray-100 p-6 rounded-lg relative">
             <h3 className="font-bold mb-2">W3C Standard</h3>
-            <SiW3C
+            <DiW3C
               title="W3C link"
               className="absolute top-7 right-7 text-2xl"
             />
