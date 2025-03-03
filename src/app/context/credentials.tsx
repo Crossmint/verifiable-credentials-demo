@@ -11,7 +11,7 @@ import {
   Lit,
   Collection,
   VCNFT as Nft,
-  CrossmintMetamaskDecrypt
+  CrossmintMetamaskDecrypt,
 } from "@crossmint/client-sdk-verifiable-credentials";
 
 type Wallet = {
@@ -41,20 +41,23 @@ export function CredentialProvider({
   children: React.ReactNode;
 }) {
   const [collections, setCollections] = useState<Collection[] | null>(null);
-  const [hasStudentId, setHasStudentId] = useState<"false"|"true"|"pending" >("false");
-  const [studentIdCollection, setStudentIdCollection] = useState<Collection | null>(null);
+  const [hasStudentId, setHasStudentId] = useState<
+    "false" | "true" | "pending"
+  >("false");
+  const [studentIdCollection, setStudentIdCollection] =
+    useState<Collection | null>(null);
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
   const [pendingCourses, setPendingCourses] = useState<string[]>([]);
   const setPendingStudentId = () => {
     setHasStudentId("pending");
   };
 
-  const { primaryWallet: wallet, handleUnlinkWallet  } = useDynamicContext();
+  const { primaryWallet: wallet, handleUnlinkWallet } = useDynamicContext();
   const environment = process.env.NEXT_PUBLIC_CROSSMINT_ENV || "";
 
   useEffect(() => {
     const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY || "";
-    crossmintAPI.init(clientKey,{ environment:"staging"});
+    crossmintAPI.init(clientKey, { environment: "staging" });
 
     if (!wallet) {
       setCollections([]);
@@ -72,7 +75,7 @@ export function CredentialProvider({
     const collections: any = wallet
       ? await getCredentialNfts(
           "polygon-amoy",
-          wallet,
+          wallet
           // removing filtering to keep it simple
           // {
           //   // issuers: [
@@ -96,19 +99,21 @@ export function CredentialProvider({
     //   validContracts.includes(obj.contractAddress)
     // );
 
-
     const filtered = collections;
     console.log("filtered:", filtered);
     setCollections(filtered || []);
 
-    const studentIdCollection = collections?.find(
-      (collection: any) =>
-        isStudentIdCollection(collection)
+    const studentIdCollection = collections?.find((collection: any) =>
+      isStudentIdCollection(collection)
     );
     setStudentIdCollection(studentIdCollection);
     const studentIdExists = studentIdCollection ? true : false;
 
-    const studentIdStatus = studentIdExists ? "true" : (hasStudentId === "pending" ? "pending" : "false");
+    const studentIdStatus = studentIdExists
+      ? "true"
+      : hasStudentId === "pending"
+      ? "pending"
+      : "false";
     setHasStudentId(studentIdStatus);
 
     const completed: any[] = (filtered || []).flatMap(
@@ -133,18 +138,41 @@ export function CredentialProvider({
   };
 
   const isStudentIdCollection = (collection: Collection) => {
-    const types= collection.metadata?.credentialMetadata?.type
+    const types = collection.metadata?.credentialMetadata?.type;
     for (const type of types) {
       if (type.includes("StudentId")) {
         return true;
       }
     }
     return false;
-  }
+  };
 
-  const retrieve = async (collection:Collection, tokenId:string) => {
-    console.debug(`retrieving credential for collection ${collection.contractAddress} and tokenId ${tokenId}`);
-    const credential = await new CredentialService().getCredential(collection, tokenId);
+  const retrieve = async (
+    collection: Collection,
+    tokenId: string,
+    useDogemotoKey = false
+  ) => {
+    console.debug(
+      `retrieving credential for collection ${collection.contractAddress} and tokenId ${tokenId} usingDogemotoKey: ${useDogemotoKey}`
+    );
+    let credential;
+    if (!useDogemotoKey) {
+      credential = await new CredentialService().getCredential(
+        collection,
+        tokenId
+      );
+    } else {
+      crossmintAPI.init(process.env.NEXT_PUBLIC_DOGEMOTO_KEY || "", {
+        environment: "staging",
+      });
+      credential = await new CredentialService().getCredential(
+        collection,
+        tokenId
+      );
+      crossmintAPI.init(process.env.NEXT_PUBLIC_CLIENT_KEY || "", {
+        environment: "staging",
+      });
+    }
     console.debug("retrieve credential result: ", credential);
 
     return credential;
@@ -180,7 +208,7 @@ export function CredentialProvider({
         refreshCredentials: () => getCollections(wallet?.address || ""),
         hasStudentId: hasStudentId,
         setPendingStudentId: setPendingStudentId,
-        studentId:studentIdCollection,
+        studentId: studentIdCollection,
         completedCourses: completedCourses,
         pendingCourses: pendingCourses,
         addPendingCourse: (courseId: string) => {

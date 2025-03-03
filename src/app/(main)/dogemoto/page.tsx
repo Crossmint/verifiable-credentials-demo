@@ -33,8 +33,8 @@ const Content = () => {
 
   useEffect(() => {
     const clientKey = process.env.NEXT_PUBLIC_DOGEMOTO_KEY || "";
-    crossmintAPI.init(clientKey,{ environment:"staging"});
-        
+    crossmintAPI.init(clientKey, { environment: "staging" });
+
     if (!wallet) {
       setCollections([]);
       return;
@@ -43,19 +43,14 @@ const Content = () => {
     getCollections(wallet?.address || "");
   }, [wallet]);
 
-
   const refreshCredentials = async () => {
     setIsProcessing(true);
-    await  getCollections(wallet?.address || "");
+    await getCollections(wallet?.address || "");
     setIsProcessing(false);
   };
   const getCollections = async (wallet: string) => {
     const collections: any = wallet
-      ? await getCredentialNfts(
-          "polygon-amoy",
-          wallet,
-          undefined,
-        )
+      ? await getCredentialNfts("polygon-amoy", wallet, undefined)
       : [];
 
     // remove filtering for simplicity for now
@@ -105,13 +100,13 @@ const Content = () => {
         </div>
 
         <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl py-3">Your Credential NFTs</h1>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={refreshCredentials}
-        >
-          Refresh
-        </button> 
+          <h1 className="text-2xl py-3">Your Credential NFTs</h1>
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={refreshCredentials}
+          >
+            Refresh
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -125,6 +120,7 @@ const Content = () => {
                 title={nft.metadata.name}
                 description={nft.metadata.description}
                 setIsProcessing={setIsProcessing}
+                useDogemotoKey={true}
               />
             ))
           )}

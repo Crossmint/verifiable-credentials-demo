@@ -140,6 +140,7 @@ const Content = () => {
                     title={nft.metadata.name}
                     description={nft.metadata.description}
                     setIsProcessing={setIsProcessing}
+                    useDogemotoKey={false}
                   />
                 ))
             )}

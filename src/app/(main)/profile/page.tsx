@@ -34,13 +34,14 @@ const Page = () => {
         {collections?.map((collection) =>
           collection.nfts.map((nft) => (
             <Credential
-            key={`${nft.contractAddress}:${nft.tokenId}`}
-            collection={collection}
+              key={`${nft.contractAddress}:${nft.tokenId}`}
+              collection={collection}
               nft={nft}
               imageUrl={nft.metadata.image}
               title={nft.metadata.name}
               description={nft.metadata.description}
               setIsProcessing={setIsProcessing}
+              useDogemotoKey={false}
             />
           ))
         )}
