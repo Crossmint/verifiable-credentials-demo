@@ -12,7 +12,7 @@
     "@crossmint/client-sdk-verifiable-credentials": "3.4.7",
     "@dynamic-labs/ethereum": "^1.0.9",
     "@dynamic-labs/sdk-react-core": "^1.0.9",
-    "next": "14.2.10",
+    "next": "14.2.34",
     "pino-pretty": "^10.3.1",
     "react": "^18",
     "react-dom": "^18",
